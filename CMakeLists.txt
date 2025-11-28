@@ -6,4 +6,4 @@ project(nodeman C)
 
 # Tentukan file sumber mana yang akan dikompilasi menjadi sebuah executable (program jadi)
 # Anda mendaftarkan SEMUA file .c di sini.
-add_executable(ndm src/main.c src/print/print.c src/install/install.c src/change/change.c)
+add_executable(ndm src/main.c src/print/print.c src/install/install.c src/change/change.c src/list/list.c src/remove/remove.c)
