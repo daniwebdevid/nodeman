@@ -1,3 +1,8 @@
+Tentu, saya akan memperbarui `README.md` Anda untuk menyertakan fitur baru **"List Installed"** (`-iL`). Saya juga akan menambahkan bagian kecil di bawah **Usage** untuk memberikan konteks fitur `list` yang berbeda.
+
+Berikut adalah versi final dari `README.md` Anda:
+
+----------
 
 # Node Version Manager (ndm) 🚀
 
@@ -8,7 +13,7 @@
 * **Dynamic Architecture Detection:** Automatically detects the host Linux architecture (x64, arm64, etc.) to download the correct Node.js binary tarball.
 * **Version Installation (`-i`):** Downloads, extracts, and installs specified Node.js versions into `/usr/local/lib/`.
 * **Version Switching (`-c`):** Manages the active Node.js version by updating the system symlinks in `/usr/local/bin/`.
-* **Dependency-Lite:** Relies only on standard system tools (`aria2c`, `tar`, `ln`, `test`) and minimal C libraries.
+* **Version Listing (`-l`, `-iL`):** Lists both available versions from the Node.js remote server and versions already installed locally.
 
 ---
 
@@ -21,11 +26,11 @@ Since `ndm` is written in C and uses a modern build system, we use **CMake** to 
 1.  **CMake:** Version 3.10 or higher.
 2.  **C Compiler:** `gcc` or `clang`.
 3.  **Make Utility:** `make` (or Ninja).
-4.  **System Dependencies:** `aria2c`, `tar`.
+4.  **System Dependencies:** `aria2c`, `tar`, **`curl`**, **`tr`**, **`grep`**, **`awk`** (required for version listing).
 
 ### Build Steps (Using CMake)
 
-Assuming you have a `CMakeLists.txt` file configured to find all source files (`main.c`, `print/*.c`, `install/*.c`, `change/*.c`):
+Assuming you have a `CMakeLists.txt` file configured to find all source files:
 
 ```bash
 # 1. Create a dedicated build directory
@@ -41,7 +46,6 @@ cmake ..
 cmake --build .
 
 # 4. Install the binary to a system path (Requires sudo/root access)
-# This step is highly recommended so you can run 'ndm' from anywhere.
 sudo cmake --install .
 
 ```
@@ -54,8 +58,6 @@ sudo cmake --install .
 
 ### 1. Install a New Node.js Version (`-i` or `--install`)
 
-This command downloads the specified version, checks if it's already installed, and installs it to `/usr/local/lib/nodejs<version>`.
-
 Bash
 
 ```
@@ -64,11 +66,7 @@ sudo ndm -i 20.13.0
 
 ```
 
-_(The install process does **not** automatically switch your active version.)_
-
 ### 2. Switch the Active Node.js Version (`-c` or `--change`)
-
-This command changes the system's active Node.js version by replacing symlinks in `/usr/local/bin/`. It first checks if the target version is already installed.
 
 Bash
 
@@ -76,20 +74,33 @@ Bash
 # Syntax: sudo ndm -c <version>
 sudo ndm -c 20.13.0
 
-# Example: Switch to a previously installed version
-sudo ndm -c 22.1.0 
-
 ```
 
-### Verification
+### 3. Listing Versions
 
-After switching the version, verify the change using the standard Node.js command:
+**Command**
+
+**Flag**
+
+**Description**
+
+`ndm -l`
+
+`--list`
+
+Lists **ALL AVAILABLE** versions from the remote Node.js server.
+
+`ndm -iL`
+
+`--installed-list`
+
+Lists **LOCALLY INSTALLED** versions, marking the currently active version.
 
 Bash
 
 ```
-node -v
-# Output should match the version you switched to (e.g., v22.1.0)
+# Example listing installed versions:
+./ndm -iL
 
 ```
 
