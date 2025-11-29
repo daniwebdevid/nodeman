@@ -5,21 +5,25 @@
 # Designed for one-line installation via curl | bash
 # =======================================================
 
-REPO_URL="https://github.com/daniwebdevid/nodeman.git"
+# --- Configuration ---
+# GANTI URL INI KE REPOSITORI GITHUB ANDA YANG SEBENARNYA!
+REPO_URL="https://github.com/daniwebdevid/nodeman.git" 
+PROJECT_NAME="ndm" # Nama proyek dan executable
 INSTALL_DIR=$(mktemp -d)
-PROJECT_NAME="ndm"
 BUILD_DIR="$INSTALL_DIR/$PROJECT_NAME/build"
 
 echo "--- Starting ndm (Node Version Manager) Installation ---"
 
-# --- 1. Check for Prerequisites ---
-echo "1. Checking prerequisites (git, cmake, gcc, aria2c)..."
+# --- HELPER FUNCTION: Check for Prerequisites ---
 check_command() {
     if ! command -v "$1" &> /dev/null; then
         echo "❌ Error: Required command '$1' not found. Please install it first."
         exit 1
     fi
 }
+
+# --- 1. Check for Prerequisites ---
+echo "1. Checking prerequisites (git, cmake, gcc, aria2c)..."
 check_command git
 check_command cmake
 check_command gcc
@@ -45,15 +49,17 @@ cd "$BUILD_DIR" || exit
 echo "   Running CMake configuration..."
 if ! cmake ../; then
     echo "❌ Error: CMake configuration failed."
-    cd ~ && rm -rf "$INSTALL_DIR"
+    cd ~ 
+    rm -rf "$INSTALL_DIR"
     exit 1
 fi
 
 # --- 4. Build the Project ---
 echo "4. Building the ndm executable..."
 if ! cmake --build .; then
-    echo "❌ Error: Project build failed."
-    cd ~ && rm -rf "$INSTALL_DIR"
+    echo "❌ Error: Project build failed. Check the C source files for errors."
+    cd ~ 
+    rm -rf "$INSTALL_DIR"
     exit 1
 fi
 echo "✅ Build successful."
@@ -61,13 +67,21 @@ echo "✅ Build successful."
 # --- 5. Install to System Path ---
 echo "5. Installing ndm to /usr/local/bin/..."
 echo "   (This step requires sudo privileges)"
+
+# Jika instalasi gagal, masuk ke blok else.
 if sudo cmake --install . ; then
     echo "================================================="
-    echo "🎉 SUCCESS: ndm v1.0.0 has been installed."
-    echo "   Try: sudo ndm -i 22.1.0"
+    echo "🎉 SUCCESS: ndm v1.1.0 has been installed."
+    echo "   You can now run 'sudo ndm -i <version>'."
     echo "================================================="
 else
     echo "❌ Error: Installation failed. Check sudo permissions."
+    
+    # 🚨 Cleanup dan Exit jika gagal
+    cd ~
+    rm -rf "$INSTALL_DIR"
+    echo "✅ Cleanup temporary directory after failed installation."
+    exit 1 
 fi
 
 # --- 6. Cleanup ---
