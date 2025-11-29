@@ -8,7 +8,7 @@
 # --- Configuration ---
 # GANTI URL INI KE REPOSITORI GITHUB ANDA YANG SEBENARNYA!
 REPO_URL="https://github.com/daniwebdevid/nodeman.git" 
-PROJECT_NAME="ndm" # Nama proyek dan executable
+PROJECT_NAME="nodeman" # Nama proyek dan executable
 INSTALL_DIR=$(mktemp -d)
 BUILD_DIR="$INSTALL_DIR/$PROJECT_NAME/build"
 
