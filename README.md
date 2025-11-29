@@ -1,126 +1,114 @@
-Tentu, saya akan memperbarui `README.md` Anda untuk menyertakan fitur baru **"List Installed"** (`-iL`). Saya juga akan menambahkan bagian kecil di bawah **Usage** untuk memberikan konteks fitur `list` yang berbeda.
+Tentu, saya akan menerjemahkan `README.md` lengkap tentang **Node Version Manager (ndm)** ke dalam Bahasa Inggris.
 
-Berikut adalah versi final dari `README.md` Anda:
+Berikut adalah versi Bahasa Inggris dari file `README.md` tersebut:
 
-----------
+-----
 
 # Node Version Manager (ndm) 🚀
 
-**ndm** (Node Version Manager) is a simple, command-line tool built in C to easily install and switch between multiple versions of Node.js on Linux systems. It is designed to be lightweight and fast, directly managing installation directories and system symlinks.
+**ndm** (Node Version Manager) is a simple version manager developed in **C**, designed for **fast and minimalist** installation and management of Node.js versions on Linux systems.
+
+The main goal of this project is to provide a lightweight and quick tool for switching between and managing various Node.js versions without the overhead of complex Bash scripts.
+
+-----
 
 ## ✨ Features
 
-* **Dynamic Architecture Detection:** Automatically detects the host Linux architecture (x64, arm64, etc.) to download the correct Node.js binary tarball.
-* **Version Installation (`-i`):** Downloads, extracts, and installs specified Node.js versions into `/usr/local/lib/`.
-* **Version Switching (`-c`):** Manages the active Node.js version by updating the system symlinks in `/usr/local/bin/`.
-* **Version Listing (`-l`, `-iL`):** Lists both available versions from the Node.js remote server and versions already installed locally.
+  * **Dynamic Architecture Detection:** Automatically detects the host Linux architecture (x64, arm64, etc.) to download the correct Node.js binary tarball.
+  * **Version Installation (`-i`):** Downloads, extracts, and installs specified Node.js versions.
+  * **Version Switching (`-c`):** Manages the active Node.js version by updating system symlinks in `/usr/local/bin/`.
+  * **Version Listing (`-l`, `-iL`):** Lists available versions from the Node.js server, or versions already installed locally.
+  * **Version Removal (`-r`):** Removes a specified Node.js version from the system.
 
----
+-----
+
+## 👨‍💻 Usage
+
+**WARNING:** All installation, switching, and removal commands require **root privileges** (`sudo`) as they interact with system directories (`/usr/local/lib` and `/usr/local/bin`).
+
+### Core Functionality (CLI Flags)
+
+| Long Flag | Short Flag | Description |
+| :--- | :--- | :--- |
+| `--install <version>` | `-i <version>` | Installs a specific Node.js version (e.g., `sudo ndm -i 20.13.0`). |
+| `--change <version>` | `-c <version>` | Switches the currently active Node.js version (e.g., `sudo ndm -c 22.1.0`). |
+| `--remove <version>` | `-r <version>` | Removes a specific Node.js version (e.g., `sudo ndm -r 20.0.0`). |
+| `--list [filter]` | `-l [filter]` | Lists **ALL AVAILABLE VERSIONS**. Can be filtered (e.g., `ndm -l 22`). |
+| `--installed-list` | `-iL` | Lists **LOCALLY INSTALLED VERSIONS**, marking the active one (e.g., `sudo ndm -iL`). |
+
+### Usage Examples
+
+```bash
+# Install the latest Node.js version
+sudo ndm -i 22.1.0
+
+# Switch to the newly installed version
+sudo ndm -c 22.1.0
+
+# View all installed versions
+sudo ndm -iL
+
+# Remove a specific version
+sudo ndm -r 20.0.0
+```
+
+-----
 
 ## 💾 Installation & Building
 
-Since `ndm` is written in C and uses a modern build system, we use **CMake** to handle the compilation process.
-
 ### Prerequisites
+
+Ensure you have the following dependencies installed:
 
 1.  **CMake:** Version 3.10 or higher.
 2.  **C Compiler:** `gcc` or `clang`.
 3.  **Make Utility:** `make` (or Ninja).
-4.  **System Dependencies:** `aria2c`, `tar`, **`curl`**, **`tr`**, **`grep`**, **`awk`** (required for version listing).
+4.  **Dependencies:** `git`, `aria2c` (for fast downloading), `curl`, `tar`, `tr`, `grep`, `awk`.
 
-### Build Steps (Using CMake)
+### 1\. Quick Installation Guide
 
-Assuming you have a `CMakeLists.txt` file configured to find all source files:
+Use `curl` to download and run the `install.sh` script. This command will automatically compile the project from the source code and copy the executable to `/usr/local/bin/`.
+
+> **Important:** The script must be run with `sudo` as it requires root privileges to copy the `ndm` executable to the system directory (`/usr/local/bin`).
 
 ```bash
-# 1. Create a dedicated build directory
-mkdir -p build
+# Run this command in your terminal:
+curl -sL [https://raw.githubusercontent.com/daniwebdevid/nodeman/bashinstallTest/install.sh](https://raw.githubusercontent.com/daniwebdevid/nodeman/bashinstallTest/install.sh) | sudo bash
+```
+
+### 2\. Manual Build
+
+If you wish to compile `ndm` manually without the installation script, follow these steps:
+
+```bash
+# 1. Clone the repository
+git clone [https://github.com/daniwebdevid/nodeman.git](https://github.com/daniwebdevid/nodeman.git)
+cd nodeman
+
+# 2. Create the build directory
+mkdir build
 cd build
 
-# 2. Configure the project using CMake
-# This generates the platform-specific build files (e.g., Makefiles)
+# 3. Configure and Compile (Using CMake)
 cmake ..
-
-# 3. Compile the project
-# The resulting 'ndm' binary will be in the 'build' directory.
 cmake --build .
 
-# 4. Install the binary to a system path (Requires sudo/root access)
-sudo cmake --install .
-
+# 4. Install to the system (requires root access)
+sudo cp ./ndm /usr/local/bin
+# Or using the CMake install command:
+# sudo cmake --install .
 ```
 
-----------
-
-## 👨‍💻 Usage
-
-**WARNING:** All installation and switching commands require **root privileges** (`sudo`) as they interact with system directories (`/usr/local/lib` and `/usr/local/bin`).
-
-### 1. Install a New Node.js Version (`-i` or `--install`)
-
-Bash
-
-```
-# Syntax: sudo ndm -i <version>
-sudo ndm -i 20.13.0
-
-```
-
-### 2. Switch the Active Node.js Version (`-c` or `--change`)
-
-Bash
-
-```
-# Syntax: sudo ndm -c <version>
-sudo ndm -c 20.13.0
-
-```
-
-### 3. Listing Versions
-
-**Command**
-
-**Flag**
-
-**Description**
-
-`ndm -l`
-
-`--list`
-
-Lists **ALL AVAILABLE** versions from the remote Node.js server.
-
-`ndm -iL`
-
-`--installed-list`
-
-Lists **LOCALLY INSTALLED** versions, marking the currently active version.
-
-Bash
-
-```
-# Example listing installed versions:
-./ndm -iL
-
-```
-
-----------
+-----
 
 ## 📝 Directory Structure Managed by `ndm`
 
-**Path**
+| Path | Purpose |
+| :--- | :--- |
+| `/usr/local/lib/nodejs<version>` | **Storage:** Where all Node.js tarballs are extracted and stored (e.g., `/usr/local/lib/nodejs20.13.0/`). |
+| `/usr/local/bin/` | **Execution:** Contains the symlinks (`node`, `npm`, `npx`) that point to the `/bin` directory of the currently active version. |
 
-**Purpose**
-
-`/usr/local/lib/nodejs<version>`
-
-**Storage:** Where all Node.js tarballs are extracted and stored (e.g., `/usr/local/lib/nodejs20.13.0/`).
-
-`/usr/local/bin/`
-
-**Execution:** Contains the symlinks (`node`, `npm`, `npx`) that point to the currently active version's `/bin` directory.
-
-----------
+-----
 
 ## ⚖️ License
 
@@ -128,4 +116,8 @@ This project is licensed under the **[MIT License](https://www.google.com/search
 
 ## 🤝 Contribution
 
-This project is a small, focused utility. If you find bugs or want to add support for more Node.js architectures (like `s390x` or `ppc64le`), feel free to contribute!
+This project is a small, focused utility. If you find bugs or want to add support for more Node.js architectures (like `s390x` or `ppc64le`), feel free to contribute\!
+
+-----
+
+Would you like me to upload this translated version as a file or check the formatting for any platform (like GitHub)?
