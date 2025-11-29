@@ -7,7 +7,7 @@
 
 REPO_URL="https://github.com/daniwebdevid/nodeman.git"
 INSTALL_DIR=$(mktemp -d)
-PROJECT_NAME="nodeman"
+PROJECT_NAME="ndm"
 BUILD_DIR="$INSTALL_DIR/$PROJECT_NAME/build"
 
 echo "--- Starting ndm (Node Version Manager) Installation ---"
