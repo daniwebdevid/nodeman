@@ -1,9 +1,3 @@
-Tentu, saya akan menerjemahkan `README.md` lengkap tentang **Node Version Manager (ndm)** ke dalam Bahasa Inggris.
-
-Berikut adalah versi Bahasa Inggris dari file `README.md` tersebut:
-
------
-
 # Node Version Manager (ndm) 🚀
 
 **ndm** (Node Version Manager) is a simple version manager developed in **C**, designed for **fast and minimalist** installation and management of Node.js versions on Linux systems.
