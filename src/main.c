@@ -14,32 +14,30 @@ int list_versions(const char *filter_version);
 int list_installed();
 int remove_version(const char *version); 
 
-// HELPER: Membersihkan awalan 'v' dari string versi jika ada
+// HELPER: cleaning start 'v' from version string if present
 void clean_version_prefix(char *version) {
     if (version != NULL && version[0] == 'v') {
-        // Geser string ke kiri, efektif menghapus 'v'
+        // Shift the string to the left, effectively removing the 'v'
         memmove(version, version + 1, strlen(version));
     }
 }
 
 int main(int argc, char *argv[]) {
-    print("Hello, World! (nodeman v1.1.0)\n"); 
+    print("nodeman v1.1.0\n"); 
     
     // Initial test...
     char system_cmd_output[64];
-    snprintf(system_cmd_output, sizeof(system_cmd_output), "echo 'Hello from system call!'");
-    system(system_cmd_output);
     
     // Loop through command line arguments
     for (int i = 1; i < argc; i++) {
         
-        // Buffer untuk menyimpan salinan dan membersihkan argumen
+        // Buffer for save copy and cleaning arguments
         char version_string_copy[64];
         
         // --- FEATURE: INSTALL (-i / --install) ---
         if (strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "--install") == 0) {
             if (i + 1 < argc) {
-                // Salin argumen dan bersihkan
+                // Copy argument and clean it
                 strncpy(version_string_copy, argv[i+1], sizeof(version_string_copy) - 1);
                 version_string_copy[sizeof(version_string_copy) - 1] = '\0';
                 clean_version_prefix(version_string_copy); 
@@ -57,7 +55,7 @@ int main(int argc, char *argv[]) {
         // --- FEATURE: CHANGE (-c / --change) ---
         else if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--change") == 0) {
             if (i + 1 < argc) {
-                // Salin argumen dan bersihkan
+                // Copy argument and clean it
                 strncpy(version_string_copy, argv[i+1], sizeof(version_string_copy) - 1);
                 version_string_copy[sizeof(version_string_copy) - 1] = '\0';
                 clean_version_prefix(version_string_copy); 
@@ -75,7 +73,7 @@ int main(int argc, char *argv[]) {
         // --- FEATURE: REMOVE (-r / --remove) ---
         else if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--remove") == 0) {
             if (i + 1 < argc) {
-                // Salin argumen dan bersihkan
+                // Copy argument and clean it
                 strncpy(version_string_copy, argv[i+1], sizeof(version_string_copy) - 1);
                 version_string_copy[sizeof(version_string_copy) - 1] = '\0';
                 clean_version_prefix(version_string_copy); 
