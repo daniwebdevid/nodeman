@@ -1,33 +1,9 @@
-#include "../print/print.h"
+#include "utils/print.h"
 #include "change.h"
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h> 
 #include <sys/wait.h>
-
-// Helper to execute command, print details, and get real exit code
-// (Duplicated here to avoid circular dependency/linkage complexity)
-static int execute_command_real(const char *cmd_name, const char *cmd_str) {
-    print("--------------------------------------------------\n");
-    print(cmd_name);
-    print(":\n");
-    print(cmd_str); 
-    print("\n");
-    
-    // Execute the command via shell
-    int result = system(cmd_str);
-    
-    print("COMMAND EXIT CODE: ");
-    char result_str[10];
-    snprintf(result_str, sizeof(result_str), "%d", WEXITSTATUS(result));
-    print(result_str);
-    print("\n");
-    
-    print("--------------------------------------------------\n");
-    
-    // Return 0 for success, 1 for error (based on command's exit status)
-    return (WEXITSTATUS(result) == 0) ? 0 : 1; 
-}
 
 
 int change_version(const char *version) {

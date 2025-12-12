@@ -1,11 +1,11 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
-#include "print/print.h" 
-#include "install/install.h" 
-#include "change/change.h"   
-#include "list/list.h"   
-#include "remove/remove.h" 
+#include "utils/print.h" 
+#include "install.h" 
+#include "change.h"   
+#include "list.h"   
+#include "remove.h" 
 
 // Prototypes 
 int install(const char *version);
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
         char version_string_copy[64];
         
         // --- FEATURE: INSTALL (-i / --install) ---
-        if (strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "--install") == 0) {
+        if (strcmp(argv[i], "install") == 0) {
             if (i + 1 < argc) {
                 // Copy argument and clean it
                 strncpy(version_string_copy, argv[i+1], sizeof(version_string_copy) - 1);
