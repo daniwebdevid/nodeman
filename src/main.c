@@ -23,7 +23,7 @@ void clean_version_prefix(char *version) {
 }
 
 int main(int argc, char *argv[]) {
-    print("nodeman v1.1.0\n"); 
+    print("nodeman v2.0.0\n"); 
     
     // Initial test...
     char system_cmd_output[64];

@@ -10,4 +10,6 @@ typedef enum {
 
 DetectedDistro get_os_type();
 
+int install_build_dependencies(DetectedDistro os);
+
 #endif // DISTRO_DETECTION_H

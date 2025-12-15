@@ -1,5 +1,6 @@
 #include "utils/print.h"
-#include "arch.h"
+#include "utils/arch.h"
+#include "utils/command.h"
 #include "install.h"
 #include <unistd.h>
 #include <string.h>
@@ -8,6 +9,7 @@
 #include <sys/wait.h>
 #include "command.h"
 #include "utils/distro_detection.h"
+#include "build/apt.h" 
 
 
 int install(const char *version) {
@@ -45,7 +47,7 @@ int install(const char *version) {
     print("\n[STEP 0/5] Detecting OS and installing dependencies...\n");
     
     // call get_os_type from distro_detection.c
-    DetectedDistro os = get_os_type(); 
+    DetectedDistro os = get_os_type(); // <<< DEKLARASI PERTAMA: INI TETAP
 
     // Dispatching Logic based on detected OS
     if (os == OS_DEBIAN) {
@@ -133,7 +135,7 @@ int install(const char *version) {
     // --- STEP 6: DISTRO-SPECIFIC PACKAGING ATAU SYMLINK DEFERRED ---
     print("\n[STEP 5/5] Finalizing installation...\n"); // Mengubah penomoran step
 
-    DetectedDistro os = get_os_type();
+    // DetectedDistro os = get_os_type(); // <<< ERROR FATAL HILANG: Variabel 'os' sudah dideklarasikan di Baris 48
     int final_step_result = 0;
     int is_packaged = 0; // Flag for whether packaging was done
 
