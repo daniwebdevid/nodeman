@@ -11,23 +11,21 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # adding the executable target
 add_executable(ndm
-	src/main.c
-	src/install.c
-	src/change.c
-	src/list.c
-	src/remove.c
+	src/cli/main.c
+	src/core/install.c
+	src/core/change.c
+	src/core/list.c
+	src/core/remove.c
 	# utility sources
 	src/utils/arch.c
 	src/utils/command.c
 	src/utils/distro_detection.c
 	src/utils/print.c
 	# build system sources
-	src/build/apt.c
+	#src/build/apt.c
 )
 
 # specifying include directories for the target
 target_include_directories(ndm PRIVATE
-    ${CMAKE_SOURCE_DIR}/include/
-    ${CMAKE_SOURCE_DIR}/include/utils
-    ${CMAKE_SOURCE_DIR}/include/builds
+    include/
 )
