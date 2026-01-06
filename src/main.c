@@ -1,6 +1,21 @@
+#include <stdio.h>
+#include <string.h>
+#include "nodeman/core.h"
 #include "nodeman/utils.h"
 
-int main() {
-    logger("hello world \n");
+int main(int argc, char *argv[]) {
+
+    // check if no ARGS
+    if(argc < 2) {
+        help();
+        return 0;
+    }
+
+    if (strcmp(argv[1], "install") == 0) {
+        if (argc < 3) {
+            
+        }
+        log_info("install");
+    }
     return 0;
 }

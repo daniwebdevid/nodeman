@@ -14,8 +14,10 @@ typedef enum {
     NDM_ERR_UNKNOWN = -99
 } NdmError;
 
-void logger(const char* str);
+void log_info(const char *fmt, ...);
 
-void error(const char* str, const int code);
+void log_warn(const char *fmt, ...);
+
+void log_error(const char* str, const int code);
 
 #endif // UTILS_H
