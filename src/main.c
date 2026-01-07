@@ -11,6 +11,13 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
+    bool verbose = 0;
+    int opt;
+    static struct option long_options[] = {
+        {"verbose", no_argument, 0, 'v'},
+        {0, 0, 0, 0}
+    };
+
     if (strcmp(argv[1], "install") == 0) {
         if (argc < 3) {
             
