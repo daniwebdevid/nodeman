@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <stdbool.h>
+
 typedef enum {
     NDM_SUCCESS = 0,
 
@@ -14,10 +16,14 @@ typedef enum {
     NDM_ERR_UNKNOWN = -99
 } NdmError;
 
-void log_info(const char *fmt, ...);
+void log_info(bool *verbose, const char *fmt, ...);
 
 void log_warn(const char *fmt, ...);
 
-void log_error(const char* str, const int code);
+void log_error(const char *format, ...);
+
+int command(bool *verbose, const char *cmd, ...);
+
+const char* get_arch();
 
 #endif // UTILS_H

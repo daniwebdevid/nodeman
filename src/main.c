@@ -1,7 +1,8 @@
-#include <stdio.h>
 #include <string.h>
 #include "nodeman/core.h"
 #include "nodeman/utils.h"
+#include <errno.h>
+#include <stdbool.h>
 
 int main(int argc, char *argv[]) {
 
@@ -12,17 +13,22 @@ int main(int argc, char *argv[]) {
     }
 
     bool verbose = 0;
-    int opt;
-    static struct option long_options[] = {
-        {"verbose", no_argument, 0, 'v'},
-        {0, 0, 0, 0}
-    };
+    for (int i =0; i < argc; i++) {
+        if(strcmp(argv[i], "--verbose") == 0) {
+            verbose = true;
+        }
+    }
 
     if (strcmp(argv[1], "install") == 0) {
         if (argc < 3) {
-            
+            log_error("No package sellected");
+            log_error("Use: %s install <nama_paket>", argv[0]);
+
+            errno = EINVAL; 
+        
+            return 2; 
         }
-        log_info("install");
-    }
+        install(&verbose, argv+2);
+    } 
     return 0;
 }

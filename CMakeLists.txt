@@ -14,6 +14,9 @@ add_executable(ndm
 	src/main.c
 	src/utils/print.c
 	src/core/help.c
+	src/core/install.c
+	src/utils/command.c
+	src/utils/arch.c
 )
 
 # specifying include directories for the target

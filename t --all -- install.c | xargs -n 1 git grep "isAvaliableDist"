@@ -1,0 +1,15 @@
+[33m455b9b0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: checkout: moving from v2-rewrite to main
+[33m888d82c[m[33m ([m[1;31morigin/v2-rewrite[m[33m, [m[1;32mv2-rewrite[m[33m)[m HEAD@{1}: reset: moving to HEAD
+[33m888d82c[m[33m ([m[1;31morigin/v2-rewrite[m[33m, [m[1;32mv2-rewrite[m[33m)[m HEAD@{2}: checkout: moving from v2-rewrite to v2-rewrite
+[33m888d82c[m[33m ([m[1;31morigin/v2-rewrite[m[33m, [m[1;32mv2-rewrite[m[33m)[m HEAD@{3}: checkout: moving from v2-rewrite to v2-rewrite
+[33m888d82c[m[33m ([m[1;31morigin/v2-rewrite[m[33m, [m[1;32mv2-rewrite[m[33m)[m HEAD@{4}: checkout: moving from 1.1.1 to v2-rewrite
+[33mdf17818[m[33m ([m[1;31morigin/1.1.1[m[33m, [m[1;32m1.1.1[m[33m)[m HEAD@{5}: commit: fix(utils): add newline after command execution
+[33m455b9b0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{6}: checkout: moving from main to 1.1.1
+[33m455b9b0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{7}: checkout: moving from v2-rewrite to main
+[33m888d82c[m[33m ([m[1;31morigin/v2-rewrite[m[33m, [m[1;32mv2-rewrite[m[33m)[m HEAD@{8}: reset: moving to HEAD
+[33m888d82c[m[33m ([m[1;31morigin/v2-rewrite[m[33m, [m[1;32mv2-rewrite[m[33m)[m HEAD@{9}: commit: feat(cli): add verbose option setup
+[33mb224cb4[m HEAD@{10}: commit: feat(cli): implement initial argument parsing
+[33m04661a2[m HEAD@{11}: commit: feat: add logger function
+[33m89eb266[m HEAD@{12}: commit: refactor: restart from scratch with industrial structure
+[33m315624a[m HEAD@{13}: checkout: moving from main to v2-rewrite
+[33m455b9b0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{14}: clone: from https://github.com/daniwebdevid/nodeman
