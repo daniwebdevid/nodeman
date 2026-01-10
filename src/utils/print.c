@@ -9,8 +9,8 @@
 #define ANSI_BOLD_RED      "\033[1;31m"
 
 __attribute__((format(printf, 2, 3)))
-void log_info(bool *verbose, const char *fmt, ...) {
-    if (verbose != NULL && *verbose == true) {
+void log_info(bool verbose, const char *fmt, ...) {
+    if (verbose) {
         va_list args;
         va_start(args, fmt);
         printf(ANSI_COLOR_BLUE "[info]  " ANSI_COLOR_RESET);

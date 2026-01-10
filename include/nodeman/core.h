@@ -5,6 +5,7 @@
 
 void help();
 
-int install(bool *verbose, char *argv[]) ;
+int install(bool *verbose, char *argv[]);
+int use(bool *verbose, char *argv[]);
 
 #endif // CORE_H

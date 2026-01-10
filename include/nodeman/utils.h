@@ -1,6 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
-
+#define LOG_DEBUG(v, fmt, ...) do { if (v != NULL && *v) printf("[DEBUG] " fmt "\n", ##__VA_ARGS__); } while (0)
 #include <stdbool.h>
 
 typedef enum {
@@ -16,13 +16,14 @@ typedef enum {
     NDM_ERR_UNKNOWN = -99
 } NdmError;
 
-void log_info(bool *verbose, const char *fmt, ...);
+void log_info(bool verbose, const char *fmt, ...);
 
 void log_warn(const char *fmt, ...);
 
 void log_error(const char *format, ...);
 
 int command(bool *verbose, const char *cmd, ...);
+int command_output(bool *verbose, const char *fmt, ...);
 
 const char* get_arch();
 
