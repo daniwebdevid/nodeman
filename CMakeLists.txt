@@ -18,9 +18,12 @@ add_executable(ndm
 	src/utils/command.c
 	src/utils/arch.c
 	src/core/use.c
+	src/utils/file.c
 )
 
 # specifying include directories for the target
 target_include_directories(ndm PRIVATE
     include/
 )
+
+install(TARGETS ndm DESTINATION bin)

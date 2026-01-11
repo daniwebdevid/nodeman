@@ -25,6 +25,8 @@ void log_error(const char *format, ...);
 int command(bool *verbose, const char *cmd, ...);
 int command_output(bool *verbose, const char *fmt, ...);
 
+bool file_write(const char *filename, bool append, const char *fmt, ...);
+
 const char* get_arch();
 
 #endif // UTILS_H

@@ -32,7 +32,7 @@ int install(bool *verbose, char *argv[]) {
     char path[512];
     snprintf(path, sizeof(path), "%s/%s/source", NODE_INSTALL_DIR, argv[0]);
     if (verbose != NULL && *verbose) {
-        log_info(*verbose,"[DEBUG] Checking local path: %s\n", path);
+        log_info(*verbose,"Checking local path: %s\n", path);
     }
     if (access(path, F_OK) == 0) {
         log_error("Found source path. install skiped");

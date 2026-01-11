@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
         
             return 2; 
         }
-        use(&verbose, argv+2);
+        use(&verbose, argc-2, argv+2);
     }
     return 0;
 }
