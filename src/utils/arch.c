@@ -1,6 +1,10 @@
 #include <sys/utsname.h>
 #include <string.h>
 
+/**
+ * Detects the system architecture and maps it to Node.js naming conventions.
+ * Returns "unknown" if uname fails or "unsupported" for non-mapped archs.
+ */
 const char* get_arch() {
     struct utsname buffer;
 
@@ -8,6 +12,7 @@ const char* get_arch() {
         return "unknown";
     }
 
+    // Map system machine names to Node.js dist naming
     if (strcmp(buffer.machine, "x86_64") == 0) {
         return "x64";
     } 

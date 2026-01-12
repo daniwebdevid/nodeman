@@ -8,33 +8,42 @@
 #define ANSI_COLOR_RESET   "\x1b[0m"
 #define ANSI_BOLD_RED      "\033[1;31m"
 
+/**
+ * Prints informational messages if verbose mode is enabled.
+ */
 __attribute__((format(printf, 2, 3)))
 void log_info(bool verbose, const char *fmt, ...) {
     if (verbose) {
         va_list args;
         va_start(args, fmt);
-        printf(ANSI_COLOR_BLUE "[info]  " ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_BLUE "[INFO]  " ANSI_COLOR_RESET);
         vprintf(fmt, args);
         printf("\n");
         va_end(args);
     }
 }
 
+/**
+ * Prints warning messages to stderr.
+ */
 __attribute__((format(printf, 1, 2)))
-void warn(const char *fmt, ...) {
+void log_warn(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    fprintf(stderr, ANSI_COLOR_YELLOW "[warn]  " ANSI_COLOR_RESET);
+    fprintf(stderr, ANSI_COLOR_YELLOW "[WARN]  " ANSI_COLOR_RESET);
     vfprintf(stderr, fmt, args);
     fprintf(stderr, "\n");
     va_end(args);
 }
 
+/**
+ * Prints error messages to stderr and flushes the stream.
+ */
 __attribute__((format(printf, 1, 2)))
 void log_error(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    fprintf(stderr, ANSI_BOLD_RED "[error] " ANSI_COLOR_RESET);
+    fprintf(stderr, ANSI_BOLD_RED "[ERROR] " ANSI_COLOR_RESET);
     vfprintf(stderr, fmt, args);
     fprintf(stderr, "\n");
     va_end(args);

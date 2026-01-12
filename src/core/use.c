@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <errno.h>
 
@@ -12,129 +11,109 @@
 
 #define NODE_INSTALL_DIR "/opt/nodeman"
 
-int use(bool *verbose, int  argc, char *argv[]) {
-    
-    //check flags
+/**
+ * Entry point for switching Node versions.
+ * Dispatches to either system-wide (default) or user-specific installation.
+ */
+int use(bool *verbose, int argc, char *argv[]) {
     bool default_flags = false;
-    for (int i =0; i < argc; i++) {
-        if(strcmp(argv[i], "--default") == 0) {
+    
+    // Check for --default flag in arguments
+    for (int i = 0; i < argc; i++) {
+        if (strcmp(argv[i], "--default") == 0) {
             default_flags = true;
+            break;
         }
     }
 
-
-    if (default_flags == true) {
-        
-        //check uid is not 0
-        if (getuid() != 0) {
-            log_error("Need root for this operation");
-            errno = EACCES;
-            return 2;
-        }
-        
-        //is avaliable in local
-        char path[512];
-        snprintf(path, sizeof(path), "%s/%s/source", NODE_INSTALL_DIR, argv[0]);
-        log_info(*verbose,"Checking local path: %s\n", path);
-        if (access(path, F_OK) != 0) {
-            log_error(" %s/%s/source Not found ", NODE_INSTALL_DIR, argv[0]);
-            errno = ENOENT;
-            return 2;
-        }
-        
-        //copy folder to default path
-        log_info(*verbose, "Copy folder in version to default folder");
-        if(command(verbose, "cp -r %s/%s/source %s/default/", NODE_INSTALL_DIR, argv[0], NODE_INSTALL_DIR) != 0) {
-            log_error("Error to copy file");
-            errno = EIO;
-            return 2;
-        }
-
-        //create symlink default folder
-        log_info(*verbose, "create symlink to folder bin in default path");
-        if(command(verbose, "ln -s %s/default/source/bin %s/default/bin", NODE_INSTALL_DIR, NODE_INSTALL_DIR) != 0) {
-            log_error("Failed to create symlink");
-            errno = EIO;
-            return 2;
-        }
+    if (default_flags) {
+        return use_default(verbose, argv);
     } else {
-        log_info(true, "Start to change symlink to ~/.ndm/bin");
-
-        //check uid is not 0
-        if (getuid() == 0) {
-            log_error("No need root for this operation");
-            errno = EPERM;
-            return 2;
-        }
-
-        //is avaliable in local
-        char pathNodejs[512];
-        snprintf(pathNodejs, sizeof(pathNodejs), "%s/%s/source", NODE_INSTALL_DIR, argv[0]);
-        log_info(*verbose,"Checking node local path: %s\n", pathNodejs);
-        if (access(pathNodejs, F_OK) != 0) {
-            log_error(" %s/%s/source Not found ", NODE_INSTALL_DIR, argv[0]);
-            errno = ENOENT;
-            return 2;
-        }
-
-        log_info(*verbose, "Check dotfiles");
-        char dotfile[512];
-        snprintf(dotfile, sizeof(dotfile), "%s/.ndm/", getenv("HOME"));
-        log_info(*verbose,"Checking dotfile path: %s\n", dotfile);
-        if (access(dotfile, F_OK) != 0) {
-            command(verbose, "mkdir -p %s/.ndm/", getenv("HOME"));
-        }
-
-        log_info(*verbose, "Check dotfiles");
-        char workspace_path[512];
-        snprintf(workspace_path, sizeof(workspace_path), "%s/.ndm/%s/bin", getenv("HOME"), argv[0]);
-        log_info(*verbose,"Checking workspace path: %s\n", workspace_path);
-        if (access(workspace_path, F_OK) != 0) {
-            command(verbose, "mkdir -p %s/.ndm/%s/bin", getenv("HOME"), argv[0]);
-        }
-
-        char bin[4][10] = {"node", "npm", "npx", "corepack"};
-        for (int i = 0; i < 4; i++) {
-            log_info(*verbose, "create symlink for %s", bin[i]);
-            if(command(verbose, "ln -sf %s/%s/bin/%s %s/.ndm/%s/bin/", NODE_INSTALL_DIR, argv[0], bin[i], getenv("HOME"), argv[0]) != 0) {
-                log_error("Failed to create symlink %s", bin[i]);
-                errno = EIO;
-                return 1;
-            }
-        }
-
-        //delete binary path on dotfile
-        if(command(verbose, "rm -rf %s/.ndm/bin", getenv("HOME")) != 0) {
-            log_error("Failed to remove %s/.ndm/bin", getenv("HOME"));
-            errno = EIO;
-            return 1;
-        }
-
-        //create symlink to user absolute Path
-        if(command(verbose, "ln -sf %s/.ndm/%s/bin %s/.ndm/bin", getenv("HOME"), argv[0], getenv("HOME")) != 0) {
-            log_error("Failed to create symlink to user absolute path");
-            errno = EIO;
-            return 1;
-        }
-
-        //write .npmrc for user workspace
-        char nmprc_path[1024];
-        snprintf(nmprc_path, sizeof(nmprc_path), "%s/.npmrc", getenv("HOME"));
-        if(file_write(nmprc_path, false, "prefix=%s/.ndm/%s/", getenv("HOME"), argv[0]) != 0) {
-            log_error("Failed to write npmrc");
-            errno = EIO;
-            return 1;
-        }
-
-        //write .ndm/active
-        char active_path[1024];
-        snprintf(active_path, sizeof(active_path), "%s/.ndm/active", getenv("HOME"));
-        if(file_write(active_path, false, "%s", argv[0]) != 0) {
-            log_error("Failed to write active file");
-            errno = EIO;
-            return 1;
-        }
-        
+        return use_user(verbose, argv);
     }
+}
+
+/**
+ * Handles system-wide Node.js version switching.
+ * Requires root privileges.
+ */
+int use_default(bool *verbose, char *argv[]) {
+    if (getuid() != 0) {
+        log_error("Root privileges required for global configuration (current UID: %d)", getuid());
+        return (errno = EACCES, 2);
+    }
+
+    char path[512];
+    snprintf(path, sizeof(path), "%s/%s/source", NODE_INSTALL_DIR, argv[0]);
+    
+    if (access(path, F_OK) != 0) {
+        log_error("Node.js source directory not found: %s", path);
+        return (errno = ENOENT, 2);
+    }
+
+    log_info(*verbose, "Synchronizing version '%s' to global default...", argv[0]);
+    
+    // Perform copy and update global symlinks
+    command(verbose, "cp -r %s/%s/source %s/default/", NODE_INSTALL_DIR, argv[0], NODE_INSTALL_DIR);
+    command(verbose, "ln -snf %s/default/source/bin %s/default/bin", NODE_INSTALL_DIR, NODE_INSTALL_DIR);
+    
+    return 0;
+}
+
+/**
+ * Handles user-specific Node.js version switching.
+ * Creates symlinks within the user's home directory.
+ */
+int use_user(bool *verbose, char *argv[]) {
+    char *home = getenv("HOME");
+    if (!home) {
+        log_error("Environment variable $HOME is not set");
+        return 1;
+    }
+
+    if (getuid() == 0) {
+        log_error("Running 'use_user' as root is not recommended; use --default for global setup");
+        return (errno = EPERM, 2);
+    }
+
+    // 1. Source Path Validation
+    char pathNodejs[512];
+    snprintf(pathNodejs, sizeof(pathNodejs), "%s/%s/source", NODE_INSTALL_DIR, argv[0]);
+    if (access(pathNodejs, F_OK) != 0) {
+        log_error("Node.js version '%s' is not installed in %s", argv[0], NODE_INSTALL_DIR);
+        return (errno = ENOENT, 2);
+    }
+
+    // 2. Setup Local Directory Structure (~/.ndm)
+    log_info(*verbose, "Preparing local directory structure in %s/.ndm", home);
+    command(verbose, "mkdir -p %s/.ndm/%s/bin", home, argv[0]);
+
+    // 3. Link Node.js Binaries
+    char *binaries[] = {"node", "npm", "npx", "corepack"};
+    for (int i = 0; i < 4; i++) {
+        log_info(*verbose, "Linking binary [%s] for version %s", binaries[i], argv[i]);
+        command(verbose, "ln -snf %s/%s/bin/%s %s/.ndm/%s/bin/%s", 
+                NODE_INSTALL_DIR, argv[0], binaries[i], home, argv[0], binaries[i]);
+    }
+
+    // 4. Update Active Symlink (Atomic Switch)
+    // Using -n to ensure the symlink is overwritten rather than creating a nested link
+    log_info(*verbose, "Updating active environment symlink...");
+    if (command(verbose, "ln -snf %s/.ndm/%s/bin %s/.ndm/bin", home, argv[0], home) != 0) {
+        log_error("Failed to update active symlink at %s/.ndm/bin", home);
+        return 1;
+    }
+
+    // 5. Update Configuration Files (.npmrc & active version tracker)
+    char path_buf[1024];
+    
+    log_info(*verbose, "Updating .npmrc and active version file");
+    snprintf(path_buf, sizeof(path_buf), "%s/.npmrc", home);
+    file_write(path_buf, false, "prefix=%s/.ndm/%s/", home, argv[0]);
+
+    snprintf(path_buf, sizeof(path_buf), "%s/.ndm/active", home);
+    file_write(path_buf, false, "%s", argv[0]);
+
+    log_info(true, "Successfully switched to Node.js %s", argv[0]);
     return 0;
 }

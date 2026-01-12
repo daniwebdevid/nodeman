@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 #include "nodeman/core.h"
 #include "nodeman/utils.h"
 #include <errno.h>
@@ -39,6 +40,11 @@ int main(int argc, char *argv[]) {
             return 2; 
         }
         use(&verbose, argc-2, argv+2);
+    } else if(strcmp(argv[1], "-v") == 0 | strcmp(argv[1], "--version") == 0) {
+        printf("2.0.0\n");
+    } else if(strcmp(argv[1], "list") == 0) {
+        list(&verbose, argc - 2, argv + 2);
     }
+
     return 0;
 }
