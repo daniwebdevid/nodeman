@@ -1,129 +1,79 @@
-# Node Version Manager (ndm) 🚀
+# NDM (Node Manager)
 
-**ndm** is a fast, lightweight Node.js version manager written in C. Manage multiple Node.js versions effortlessly with zero dependencies—install, switch, and list versions with a single command.
+A high-performance, lightweight Node.js version manager written in C for Linux systems.
+
+## 📌 Overview
+
+**NDM** is a native Linux utility designed to manage Node.js installations with zero overhead. Unlike shell-based managers, NDM is compiled for speed and handles version switching through atomic symlink manipulation and environment configuration.
 
 ## ✨ Features
 
-* 🚀 **Dynamic Architecture Detection:** Automatically detects your Linux architecture (x64, arm64, etc.) and downloads the correct Node.js binary.
-* 📦 **Seamless Installation:** Install Node.js versions instantly with a single command—no configuration required.
-* 🔄 **Quick Version Switching:** Switch between installed Node.js versions in seconds by updating system symlinks.
-* ✅ **Comprehensive Version Listing:** View available versions from the official Node.js repository and check your locally installed versions.
-* ⚡ **Lightweight & Fast:** Built entirely in C with minimal dependencies—optimized for speed and efficiency.
+* **Zero Shell Overhead**: Written in C for instant execution without interpreting large shell scripts.
+* **Dual-Scope Management**: Supports system-wide (global) defaults and user-specific local environments.
+* **Security Minded**: Includes path traversal protection and strict privilege validation for root-level operations.
+* **Architecture Aware**: Automatically detects system architecture (x64, arm64, armv7l, etc.) to fetch compatible binaries.
+* **Atomic Switching**: Updates user environments by re-linking binary paths and updating `.npmrc` automatically.
 
----
+## 🛠 Tech Stack
 
-## 💾 Installation
+* **Language**: C11.
+* **Build System**: CMake 3.10+.
+* **System Dependencies**: `curl` (for fetching versions), `tar` (for extraction).
 
-### Quick Install (For Users)
+## 🚀 Installation
 
-Get started with a single command using our automated installation script:
+### Prerequisites
 
-```bash
-curl -sL https://raw.githubusercontent.com/daniwebdevid/nodeman/bashinstallTest/install.sh | sudo bash
-```
+* GCC or Clang
+* CMake 3.10 or higher
+* `curl` and `xz-utils` installed on your Linux distribution
 
-Once installed, you're ready to start managing Node.js versions:
-
-```bash
-ndm -i 20.13.0    # Install a version
-ndm -c 20.13.0    # Switch versions
-ndm -iL            # List installed versions
-```
-
-### Building from Source (For Contributors)
-
-`ndm` is built with **CMake**, a modern build system that handles compilation across different platforms.
-
-#### Prerequisites
-
-1.  **CMake:** Version 3.10 or higher.
-2.  **C Compiler:** `gcc` or `clang`.
-3.  **Make Utility:** `make` (or Ninja).
-4.  **System Dependencies:** **`aria2c`**, **`tar`**, **`curl`**, **`tr`**, **`grep`**, **`awk`** (required for version listing).
-
-#### Build Steps
+### Building from Source
 
 ```bash
-# 1. Create a dedicated build directory
-mkdir -p build
-cd build
-
-# 2. Configure the project using CMake
+git clone https://github.com/yourusername/nodeman.git
+cd nodeman
+mkdir build && cd build
 cmake ..
-
-# 3. Compile the project
-cmake --build .
-
-# 4. Install the binary to your system (requires sudo/root access)
-sudo cmake --install .
-```
-
-----------
-
-## 👨‍💻 Usage
-
-> [!CAUTION]
-> **Root Privileges Required:** All installation and version switching commands require **`sudo`** (root access) as they interact with system directories (`/usr/local/lib` and `/usr/local/bin`).
-
-### 1. Install a New Node.js Version (`-i` or `--install`)
-
-Bash
-
-```
-# Syntax: sudo ndm -i <version>
-sudo ndm -i 20.13.0
+make
+sudo make install
 
 ```
 
-### 2. Switch the Active Node.js Version (`-c` or `--change`)
+## 📖 Usage
 
-Bash
+| Command | Description |
+| --- | --- |
+| `ndm install <version>` | Downloads and installs a specific Node.js version (Requires Root). |
+| `ndm use <version>` | Switches the current user to the specified version. |
+| `ndm use <version> --default` | Sets the global system default version (Requires Root). |
+| `ndm list` | Lists versions installed for the current user. |
+| `ndm list --system` | Lists globally installed versions. |
+| `ndm list --remote` | Fetches available versions from nodejs.org. |
+| `ndm remove <version>` | Uninstalls a specific version from the system (Requires Root). |
+
+### Global Options
+
+* `--verbose`: Show detailed execution logs and system commands.
+* `-v, --version`: Show NDM version.
+
+## ⚙️ Configuration
+
+To use NDM in user mode, add the following to your `.bashrc` or `.zshrc`:
+
+```bash
+export PATH="$HOME/.ndm/bin:$PATH"
 
 ```
-# Syntax: sudo ndm -c <version>
-sudo ndm -c 20.13.0
 
-```
+## 📜 License
 
-### 3. Listing Versions
+This program is free software: you can redistribute it and/or modify it under the terms of the **GNU General Public License** as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-| Command | Flag | Description |
-|---------|------|-------------|
-| `ndm -l` | `--list` | Lists **all available versions** from the official Node.js repository. |
-| `ndm -iL` | `--installed-list` | Lists **locally installed versions**, marking the currently active version with an asterisk. |
-
-#### Example Output
-
-```
---- Installed Node.js Versions ---
-  - v20.13.0
-  - v22.9.0
-  * v24.11.1 (ACTIVE)
-
---- End of List (3 versions found) ---
-```
-
-----------
-
-## 📝 Directory Structure Managed by `ndm`
-
-| Path | Purpose |
-|------|---------|
-| `/usr/local/lib/nodejsX.X.X/` | **Storage:** Where Node.js versions are extracted and stored (e.g., `/usr/local/lib/nodejs20.13.0/`). |
-| `/usr/local/bin/` | **Execution:** Contains the symlinks (`node`, `npm`, `npx`) pointing to the active version's binaries. |
-
-----------
-
-## ⚖️ License
-
-This project is licensed under the **[MIT License](./LICENSE)**.
-
-## 🤝 Contribution
-
-We welcome contributions! Whether you've found a bug, want to optimize performance, or wish to add support for additional Node.js architectures (e.g., `s390x`, `ppc64le`), please feel free to contribute.
-
-For detailed contribution guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md).
-
+This program is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [LICENSE](LICENSE) file for more details.
 ---
 
-**Copyright © 2025 ndm Contributors. All rights reserved.**
+**Developed by Dany Saputra**
+*Contributions are welcome. Please open an issue to discuss proposed changes.*
+
+---

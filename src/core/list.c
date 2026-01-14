@@ -9,7 +9,7 @@
 #include "nodeman/utils.h"
 #include "nodeman/core.h"
 
-#define NODE_INSTALL_DIR "/opt/nodeman"
+
 
 /**
  * Iterates through a directory and prints installed Node.js versions.

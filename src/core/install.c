@@ -7,8 +7,6 @@
 #include "nodeman/utils.h"
 #include "nodeman/core.h"
 
-#define NODE_INSTALL_DIR "/opt/nodeman"
-
 /**
  * Installs a specific Node.js version.
  * Downloads the binary from the official distribution, extracts it,
@@ -17,11 +15,19 @@
 int install(bool *verbose, char *argv[]) {
     log_info(true, "Initializing installation for Node.js version: %s", argv[0]);
 
-    // 1. Privilege Check
-    if(geteuid() != 0) {
+    // 0. Privilege Check
+    if(getuid() != 0) {
         log_error("Root privileges (sudo) are required for installation to %s", NODE_INSTALL_DIR);
         errno = EACCES;
         return 2; // Returning 2 for permission errors consistent with previous code
+    }
+
+    // 1. Input Validation
+    if (argv[0] == NULL || strcmp(argv[0], "/") == 0 || strchr(argv[0], '/') != NULL) {
+        log_error("Invalid version name: '%s'. Path traversal or restricted access is not allowed.", 
+                  argv[0] ? argv[0] : "NULL");
+        errno = EINVAL; 
+        return 2;
     }
 
     // 2. Remote Availability Check

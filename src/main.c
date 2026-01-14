@@ -44,6 +44,12 @@ int main(int argc, char *argv[]) {
         printf("2.0.0\n");
     } else if(strcmp(argv[1], "list") == 0) {
         list(&verbose, argc - 2, argv + 2);
+    } else if(strcmp(argv[1], "remove") == 0) {
+    if (argc < 3) {
+        log_error("No version selected for removal");
+        return 2;
+    }
+    remove_node_js(&verbose, argc-2, argv+2);
     }
 
     return 0;

@@ -12,14 +12,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # adding the executable target
 add_executable(ndm
 	src/main.c
-	src/utils/print.c
 	src/core/help.c
 	src/core/install.c
-	src/utils/command.c
-	src/utils/arch.c
-	src/core/use.c
-	src/utils/file.c
 	src/core/list.c
+	src/core/remove.c
+	src/core/use.c
+
+	src/utils/arch.c
+	src/utils/command.c
+	src/utils/file.c
+	src/utils/print.c
 )
 
 # specifying include directories for the target
