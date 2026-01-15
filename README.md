@@ -73,6 +73,12 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [LICENSE](LICENSE) file for more details.
 ---
 
+## 📜 Changelog
+
+Detailed changes for each release are documented in the [CHANGELOG.md](./CHANGELOG.md) file.
+
+---
+
 **Developed by Dany Saputra**
 *Contributions are welcome. Please open an issue to discuss proposed changes.*
 
