@@ -1,4 +1,4 @@
-# NDM (Node Manager)
+# NDM (Node Manager) 🚀
 
 A high-performance, lightweight Node.js version manager written in C for Linux systems.
 
@@ -12,26 +12,33 @@ A high-performance, lightweight Node.js version manager written in C for Linux s
 * **Dual-Scope Management**: Supports system-wide (global) defaults and user-specific local environments.
 * **Security Minded**: Includes path traversal protection and strict privilege validation for root-level operations.
 * **Architecture Aware**: Automatically detects system architecture (x64, arm64, armv7l, etc.) to fetch compatible binaries.
-* **Atomic Switching**: Updates user environments by re-linking binary paths and updating `.npmrc` automatically.
+* **Atomic Switching**: Updates environments by re-linking binary paths and updating `.npmrc` automatically.
+* **Zero-Config PATH**: Automatically handles environment variables via system-wide profile integration.
 
 ## 🛠 Tech Stack
 
 * **Language**: C11.
 * **Build System**: CMake 3.10+.
-* **System Dependencies**: `curl` (for fetching versions), `tar` (for extraction).
+* **System Dependencies**: `curl`, `tar`, `xz-utils`, `systemd`.
 
 ## 🚀 Installation
 
-### Prerequisites
-
-* GCC or Clang
-* CMake 3.10 or higher
-* `curl` and `xz-utils` installed on your Linux distribution
-
-### Building from Source
+### 1. Quick Install (Recommended)
+The fastest way to get NDM up and running. This script detects your architecture, installs the binary, and **automatically configures your PATH**.
 
 ```bash
-git clone https://github.com/yourusername/nodeman.git
+curl -sL https://raw.githubusercontent.com/daniwebdevid/nodeman/main/install.sh | sudo bash
+
+```
+
+### 2. Build from Source
+
+If you prefer to compile NDM yourself:
+
+Bash
+
+```
+git clone https://github.com/daniwebdevid/nodeman.git
 cd nodeman
 mkdir build && cd build
 cmake ..
@@ -42,44 +49,72 @@ sudo make install
 
 ## 📖 Usage
 
-| Command | Description |
-| --- | --- |
-| `ndm install <version>` | Downloads and installs a specific Node.js version (Requires Root). |
-| `ndm use <version>` | Switches the current user to the specified version. |
-| `ndm use <version> --default` | Sets the global system default version (Requires Root). |
-| `ndm list` | Lists versions installed for the current user. |
-| `ndm list --system` | Lists globally installed versions. |
-| `ndm list --remote` | Fetches available versions from nodejs.org. |
-| `ndm remove <version>` | Uninstalls a specific version from the system (Requires Root). |
+**Command**
+
+**Description**
+
+`ndm install <version>`
+
+Downloads and installs a specific Node.js version (Requires Root).
+
+`ndm use <version>`
+
+Switches the current user to the specified version.
+
+`ndm use <version> --default`
+
+Sets the global system default version (Requires Root).
+
+`ndm list`
+
+Lists versions installed for the current user.
+
+`ndm list --system`
+
+Lists globally installed versions.
+
+`ndm list --remote`
+
+Fetches available versions from nodejs.org.
+
+`ndm remove <version>`
+
+Uninstalls a specific version from the system (Requires Root).
 
 ### Global Options
 
-* `--verbose`: Show detailed execution logs and system commands.
-* `-v, --version`: Show NDM version.
+-   `--verbose`: Show detailed execution logs and system commands.
+    
+-   `-v, --version`: Show NDM version.
+    
+-   `-h, --help`: Show help message.
+    
 
-## ⚙️ Configuration
+## ⚙️ How it Works (No Manual Config Required)
 
-To use NDM in user mode, add the following to your `.bashrc` or `.zshrc`:
+NDM is designed to be **Zero-Config**. Once installed via `install.sh`:
 
-```bash
-export PATH="$HOME/.ndm/bin:$PATH"
-
-```
+-   It creates `/etc/profile.d/nodeman.sh` to manage your shell's `$PATH`.
+    
+-   It uses `/etc/environment.d/` for systemd-wide environment compatibility.
+    
+-   **Note**: You might need to restart your terminal or re-login for the first time to apply the global PATH changes.
+    
 
 ## 📜 License
 
-This program is free software: you can redistribute it and/or modify it under the terms of the **GNU General Public License** as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under the terms of the **GNU General Public License v3**.
 
-This program is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [LICENSE](LICENSE) file for more details.
----
+See the [LICENSE](LICENSE) file for more details.
 
 ## 📜 Changelog
 
-Detailed changes for each release are documented in the [CHANGELOG.md](./CHANGELOG.md) file.
+Detailed changes for each release are documented in the [CHANGELOG.md](CHANGELOG.md) file.
 
----
+----------
 
-**Developed by Dany Saputra**
-*Contributions are welcome. Please open an issue to discuss proposed changes.*
+Developed by Dany Saputra
 
----
+Contributions are welcome. Please open an issue to discuss proposed changes.
+
+----------

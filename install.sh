@@ -1,99 +1,61 @@
-#!/bin/bash
+#!/bin/sh
 
-# =======================================================
-# NDM (Node Version Manager) Installation Script
-# Designed for one-line installation: curl -sSL <url> | sudo bash
-# =======================================================
+VERSION="2.0.0"
+TAR_NAME="nodeman-${VERSION}-linux.tar.xz"
+EXTRACTED_DIR="nodeman-${VERSION}-linux"
+INSTALL_PATH="/opt/nodeman"
 
-# --- Configuration ---
-REPO_URL="https://github.com/daniwebdevid/nodeman.git" 
-PROJECT_NAME="ndm" 
-TARGET_VERSION="1.1.0"
-INSTALL_DIR=$(mktemp -d)
-BUILD_DIR="$INSTALL_DIR/$PROJECT_NAME/build"
-
-echo "--- Starting ndm (Node Version Manager) Installation ---"
-
-# --- HELPER FUNCTION: Check for Prerequisites ---
-check_command() {
-    if ! command -v "$1" &> /dev/null; then
-        echo "❌ Error: Required command '$1' not found. Please install it first."
-        exit 1
-    fi
-}
-
-# --- 1. Check for Prerequisites ---
-echo "1. Checking prerequisites (git, cmake, gcc, aria2c)..."
-check_command git
-check_command cmake
-check_command gcc
-check_command aria2c
-check_command tar
-check_command curl
-echo "✅ All required dependencies found."
-
-# --- 2. Clone the Repository ---
-echo "2. Cloning source code from $REPO_URL..."
-if ! git clone --depth 1 --branch "$TARGET_VERSION" "$REPO_URL" "$INSTALL_DIR/$PROJECT_NAME"; then
-    echo "⚠️  Warning: Failed to clone specific branch '$TARGET_VERSION'. Trying default branch..."
-    if ! git clone --depth 1 "$REPO_URL" "$INSTALL_DIR/$PROJECT_NAME"; then
-        echo "❌ Error: Failed to clone repository."
-        rm -rf "$INSTALL_DIR"
-        exit 1
-    fi
-    
-    # Attempt to checkout the tag manually if not cloned by branch
-    cd "$INSTALL_DIR/$PROJECT_NAME" || exit
-    echo "   Switching to version $TARGET_VERSION..."
-    git fetch --tags
-    if ! git checkout "$TARGET_VERSION"; then
-        echo "❌ Error: Version $TARGET_VERSION not found."
-        rm -rf "$INSTALL_DIR"
-        exit 1
-    fi
+# 0. Privilege Check
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Error: Root privileges (sudo) are required for installation"
+    exit 2
 fi
-echo "✅ Repository cloned and switched to $TARGET_VERSION."
 
-# --- 3. Build Setup and Configuration ---
-echo "3. Preparing build directory..."
-mkdir -p "$BUILD_DIR"
-cd "$BUILD_DIR" || exit
+# 1. System Requirement Check
+echo "Verifying system requirements..."
+if ! command -v systemctl > /dev/null 2>&1; then
+    echo "Error: systemd not found. This version of NDM requires systemd."
+    exit 2
+fi
 
-echo "   Running CMake configuration..."
-if ! cmake ../; then
-    echo "❌ Error: CMake configuration failed."
-    rm -rf "$INSTALL_DIR"
+# 2. Download Tarball
+echo "Downloading NDM v${VERSION}..."
+if ! curl -L -O "https://github.com/daniwebdevid/nodeman/releases/download/v${VERSION}/${TAR_NAME}"; then
+    echo "Error: Failed to download tarball"
     exit 1
 fi
 
-# --- 4. Build the Project ---
-echo "4. Building the ndm executable..."
-if ! cmake --build .; then
-    echo "❌ Error: Project build failed. Check C source files for errors."
-    rm -rf "$INSTALL_DIR"
+# 3. Extraction
+echo "Extracting package..."
+if ! tar -xf "${TAR_NAME}"; then
+    echo "Error: Extraction failed"
     exit 1
 fi
-echo "✅ Build successful."
 
-# --- 5. Install to System Path ---
-echo "5. Installing ndm to /usr/local/bin/..."
-echo "   (This step may require sudo privileges)"
-
-if sudo cp ./ndm /usr/local/bin/ndm; then
-    sudo chmod +x /usr/local/bin/ndm
-    echo "================================================="
-    echo "🎉 SUCCESS: ndm $TARGET_VERSION has been installed."
-    echo "   You can now run 'ndm --help' or 'ndm install <version>'."
-    echo "================================================="
-else
-    echo "❌ Error: Installation failed. Check sudo permissions."
-    rm -rf "$INSTALL_DIR"
-    exit 1 
+# 4. Directory Preparation
+echo "Creating installation directory: ${INSTALL_PATH}"
+mkdir -p "${INSTALL_PATH}"
+if ! cp -rf "${EXTRACTED_DIR}/opt/nodeman/"* "${INSTALL_PATH}/"; then
+    echo "Error: Failed to copy files to ${INSTALL_PATH}"
+    exit 1
 fi
 
-# --- 6. Cleanup ---
-echo "6. Cleaning up temporary files..."
-rm -rf "$INSTALL_DIR"
-echo "✅ Cleanup complete."
+# 5. Finalizing Symlinks
+echo "Setting up symbolic links..."
+ln -sf "${INSTALL_PATH}/config/profile.d.sh" /etc/profile.d/nodeman.sh
+ln -sf "${INSTALL_PATH}/config/systemd.conf" /etc/environment.d/60-nodeman.conf 
 
-exit 0
+# 6. Install Binary
+echo "Installing binary to /usr/local/bin..."
+chmod +x "${EXTRACTED_DIR}/usr/local/bin/ndm"
+if ! mv "${EXTRACTED_DIR}/usr/local/bin/ndm" /usr/local/bin/; then
+    echo "Error: Failed to install binary"
+    exit 1
+fi
+
+# 7. Cleanup
+echo "Cleaning up temporary files..."
+rm -rf "${TAR_NAME}" "${EXTRACTED_DIR}"
+
+echo "Successfully installed NDM v${VERSION}"
+/usr/local/bin/ndm --version
