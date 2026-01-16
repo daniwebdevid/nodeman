@@ -43,9 +43,9 @@ fi
 # 5. Finalizing Symlinks
 echo "Setting up symbolic links..."
 mkdir -p /etc/profile.d/nodeman.sh
-ln -sf --mkdir "${INSTALL_PATH}/config/profile.d.sh" /etc/profile.d/nodeman.sh
+ln -sf "${INSTALL_PATH}/config/profile.d.sh" /etc/profile.d/nodeman.sh
 mkdir -p /etc/environment.d/60-nodeman.conf 
-ln -sf --mkdir "${INSTALL_PATH}/config/systemd.conf" /etc/environment.d/60-nodeman.conf 
+ln -sf  "${INSTALL_PATH}/config/systemd.conf" /etc/environment.d/60-nodeman.conf 
 
 # 6. Install Binary
 echo "Installing binary to /usr/local/bin..."
