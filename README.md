@@ -27,7 +27,7 @@ A high-performance, lightweight Node.js version manager written in C for Linux s
 The fastest way to get NDM up and running. This script detects your architecture, installs the binary, and **automatically configures your PATH**.
 
 ```bash
-curl -sL https://raw.githubusercontent.com/daniwebdevid/nodeman/main/install.sh | sudo bash
+curl -sL https://raw.githubusercontent.com/daniwebdevid/nodeman/v2.0.0/install.sh | sudo bash
 
 ```
 
