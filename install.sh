@@ -5,6 +5,16 @@ TAR_NAME="nodeman-${VERSION}-linux.tar.xz"
 EXTRACTED_DIR="nodeman-${VERSION}-linux"
 INSTALL_PATH="/opt/nodeman"
 
+DEPENDENCIES="tar xz curl"
+
+# Loop versi sh
+for cmd in $DEPENDENCIES; do
+    if ! command -v "$cmd" > /dev/null 2>&1; then
+        echo "[ERROR] Command $cmd not found. please install $cmd"
+        exit 1
+    fi
+done
+
 # 0. Privilege Check
 if [ "$(id -u)" -ne 0 ]; then
     echo "Error: Root privileges (sudo) are required for installation"

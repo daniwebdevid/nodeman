@@ -2,6 +2,26 @@
 
 All notable changes to the **NDM (Node Manager)** project will be documented in this file.
 
+## [2.1.0] - 2026-01-18
+
+### ✨ Added
+* **Production Integrity**: Implemented automatic **SHA256 checksum verification** for all Node.js downloads to ensure binary authenticity.
+* **Smart Caching**: Introduced a caching mechanism in `/var/cache/nodeman` to speed up repeated installations and reduce bandwidth usage.
+* **Smart Version Resolution**: Added support for major-only version strings (e.g., `ndm install 20`), which automatically resolves to the latest stable release.
+* **Atomic Symlinking**: Implemented `symlink_force` logic in `use.c` to ensure instantaneous version swaps and prevent broken states.
+* **Standardized Interface**: Refactored header architecture into `core.h` and `utils.h` for better modularity and strict function prototyping.
+
+### 🔧 Changed
+* **Zero-Config Pathing**: Enhanced system integration via `/etc/profile.d/nodeman.sh` and `/etc/environment.d/` for seamless environment management.
+* **Optimized Discovery**: Improved `list --remote` performance by utilizing direct pipes to the official Node.js `index.tab`.
+* **Standardized Exit Codes**: Integrated `NdmError` enum to provide consistent Unix exit codes (0: Success, 1: Runtime Error, 2: Privilege/User Error).
+
+### 🛡️ Security
+* **Path Traversal Protection**: Hardened input validation across all core modules to prevent directory manipulation attacks.
+* **Strict Privilege Validation**: Reinforced `getuid() == 0` checks for operations requiring root access (install, remove, and global default switching).
+
+---
+
 ## [2.0.0] - 2026-01-15
 
 ### ⚠️ BREAKING CHANGES

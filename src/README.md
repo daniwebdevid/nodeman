@@ -1,34 +1,43 @@
-# NDM Source Entry Point 🚀
+# NDM Source Entry (CLI) 🚀
 
-This directory contains the main entry point of the **NDM** application. It acts as the traffic controller that parses user input and routes it to the appropriate core logic.
+This directory contains the main entry point for the **NDM** application. It acts as the "brain" that orchestrates user commands, parses global flags, and dispatches tasks to the core modules.
 
-## 📌 Overview
+## 📌 Architecture Flow
 
-The `main.c` file is the brain of the CLI. It handles initial argument parsing, global flag detection (like `--verbose`), and command dispatching.
+The application follows a simple but powerful dispatch pattern:
+1. **CLI Input**: User runs a command (e.g., `ndm install 20`).
+2. **Flag Parsing**: `main.c` scans for global options like `--verbose`.
+3. **Dispatcher**: The command is matched, and control is handed over to the appropriate module in `src/core/`.
 
-## 🛠 File Breakdown
+## 🛠 File Overview
 
-| File | Role | Description |
+| File | Role | Responsibility |
 | :--- | :--- | :--- |
-| **`main.c`** | **CLI Orchestrator** | Handles the primary `main()` function and command routing. |
+| **`main.c`** | **Entry Point** | Handles command routing, error exit codes, and global state initialization. |
 
-## ⚙️ Execution Flow
+## ⚙️ How it Works
 
-When you run an `ndm` command, the following happens in `main.c`:
+### 🧩 Command Dispatching
+`main.c` menggunakan perbandingan string yang efisien untuk memetakan argumen CLI ke fungsi internal:
+- **`install`** → Memanggil `install()` dengan offset argumen `+2`.
+- **`use`** → Mengatur *scope* switching (user/global) melalui fungsi `use()`.
+- **`list`** → Menangani penemuan versi lokal maupun remote.
+- **`remove`** → Menjalankan logika uninstaller.
 
-1.  **Empty Check**: If no arguments are provided, it automatically triggers the `help()` function to guide the user.
-2.  **Global Flag Detection**: It scans all arguments for the `--verbose` flag to enable detailed logging across all modules.
-3.  **Command Routing**:
-    * `install` → Calls `install()` in `core/install.c`.
-    * `use` → Calls `use()` in `core/use.c`.
-    * `list` → Calls `list()` in `core/list.c`.
-    * `remove` → Calls `remove_node_js()` in `core/remove.c`.
-    * `-v / --version` → Prints the current version (`2.0.0`).
+### 🚩 Global Flag: `--verbose`
+NDM mendukung flag `--verbose` di posisi mana pun dalam argumen. Jika terdeteksi, variabel boolean `verbose` akan diaktifkan dan dipassing ke semua fungsi core dan utils untuk membuka log sistem yang detail.
 
-## 🛡️ Error Handling in Main
+### 🛡 Error Handling & Exit Codes
+Aplikasi ini dirancang untuk produksi dengan kode keluar (exit codes) yang standar:
+- `0`: Operasi sukses.
+- `2`: Kesalahan input user atau masalah hak akses (Privilege Error).
+- `1`: Kesalahan sistem internal atau kegagalan perintah luar (Runtime Error).
 
-- **Missing Arguments**: If a command like `install` or `use` is called without a version number, `main.c` catches it, logs an error, and returns exit code `2`.
-- **Exit Codes**: The application follows standard Unix exit codes to ensure it can be used reliably in shell scripts.
+## 📜 Principles
+
+1. **Efficiency**: Tidak ada alokasi memori yang berat di tahap routing awal.
+2. **Predictability**: Pesan error yang seragam jika user lupa memasukkan argumen versi.
+3. **Clean Exit**: Menggunakan `errno` untuk memberikan konteks tambahan saat aplikasi gagal.
 
 ---
 *Part of the NDM Project - High Performance Node Management*

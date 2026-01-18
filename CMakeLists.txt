@@ -24,6 +24,7 @@ add_executable(ndm
     src/utils/command.c
     src/utils/file.c
     src/utils/print.c
+    src/utils/symlink.c
 )
 
 # specifying include directories for the target

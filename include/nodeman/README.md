@@ -1,39 +1,47 @@
 # NDM Headers Interface 📑
 
-This directory contains the public definitions and function prototypes for the **NDM** project. These headers act as the contract between the CLI entry point and the underlying logic.
+This directory contains the public definitions, global configurations, and function prototypes for **NDM**. These headers act as the technical contract between the CLI entry point (`main.c`) and the internal logic modules.
 
 ## 📌 Overview
 
-We separate the interface into two main domains to keep the project modular:
-1. **`core.h`**: Business logic (Install, Use, List, Remove).
-2. **`utils.h`**: System helpers (Logging, Arch detection, Command execution).
+We separate the interface into two main domains to maintain a clean modular architecture:
+1. **`core.h`**: Defines high-level business logic (Install, Use, List, Remove).
+2. **`utils.h`**: Defines low-level system helpers (Logging, Arch detection, Command execution).
 
 ## 🛠 Header Breakdown
 
-### 💎 `core.h` (The Logic)
-Defines the primary actions of the Node Manager.
+### 🔹 `core.h` (The Business Logic)
+This header defines how the user interacts with Node.js versions.
 
-* **Global Config**: Defines `NODE_INSTALL_DIR` (`/opt/nodeman`) and `NDM_VERSION` (`2.0.0`).
-* **Prototypes**:
-    * `install()`: The entry for downloading and setting up Node.js.
-    * `use()`: The dispatcher for switching versions (user vs global).
-    * `list()`: Functions for local, system, and remote version discovery.
+* **Global Constants**: 
+    * `NODE_INSTALL_DIR`: Hardcoded to `/opt/nodeman` for production stability.
+    * `NDM_VERSION`: Centralized version tracking (currently `2.1.0`).
+* **Key Prototypes**:
+    * `install()`: Handles the full lifecycle of fetching and verifying Node.js binaries.
+    * `use()`: Orchestrates version switching for both User and Global scopes.
+    * `list_remote()`: Interface for fetching data from `nodejs.org`.
 
-### 🔧 `utils.h` (The Helpers)
-Defines internal tools and cross-platform abstractions.
+### 🔹 `utils.h` (The System Helpers)
+This header provides standardized tools to interact with the Linux OS.
 
-* **Error Codes**: Provides `NdmError` enum for standardized error handling (e.g., `NDM_ERR_SUDO`, `NDM_ERR_NETWORK`).
-* **Logging**: Macros and functions for colored terminal output (`log_info`, `log_warn`, `log_error`).
-* **System Tools**:
-    * `command()`: Wrapper for executing shell commands safely.
-    * `get_arch()`: Architecture mapping tool.
-* **File I/O**: `file_write()` for persistent configuration updates.
+* **Standardized Error Handling**: Provides the `NdmError` enum to ensure consistent exit codes across all modules.
+* **Logging Wrapper**: Macros like `LOG_DEBUG` and functions like `log_info` that respect the `--verbose` flag.
+* **Execution Engine**:
+    * `command()`: Safe wrapper for `fork/execvp`.
+    * `command_output()`: Specialized for capturing command results into buffers (e.g., SHA256 sums).
+    * `symlink_force()`: Ensures atomic updates by handling existing link conflicts.
 
-## 📜 Coding Standard
+## ⚙️ Coding Standards
 
-- **Include Guards**: All headers use `#ifndef HEADER_H` to prevent double-inclusion errors.
-- **Dependency Minimalization**: Headers only include what is absolutely necessary (`stdbool.h`, `stdio.h`) to keep compilation fast.
-- **Documentation**: Every function prototype is preceded by a comment block explaining its purpose and requirements.
+* **Include Guards**: Every header is wrapped in `#ifndef HEADER_H` to prevent double-inclusion bloat.
+* **Minimal Dependencies**: Headers only include essential system types (`stdbool.h`, `stdio.h`) to keep compilation times near-instant.
+* **Thread Safety**: While NDM is single-threaded by design, the utilities avoid global mutable state where possible.
+
+## 🚀 Versioning Strategy
+We use **Semantic Versioning** defined in `core.h`. 
+- **Major**: Breaking architectural changes.
+- **Minor**: New commands or features (like the new installer).
+- **Patch**: Bug fixes.
 
 ---
 *Part of the NDM Project - High Performance Node Management*
