@@ -14,64 +14,80 @@
  */
 int use(bool *verbose, int argc, char *argv[]) {
     bool default_flags = false;
+    char target_version[64];
+    char *version_input = argv[0];
     
     // 0. Argument Parsing
     for (int i = 0; i < argc; i++) {
-        if (strcmp(argv[i], "--default") == 0) {
+        if (argv[i] && strcmp(argv[i], "--default") == 0) {
             default_flags = true;
             break;
         }
     }
 
     // 1. Input Validation (Security & Path Traversal Check)
-    if (argv[0] == NULL || strchr(argv[0], '/') != NULL) {
+    if (version_input == NULL || strchr(version_input, '/') != NULL) {
         log_error("Invalid version name: '%s'. Path traversal is not allowed.", 
-                  argv[0] ? argv[0] : "NULL");
+                  version_input ? version_input : "NULL");
         errno = EINVAL; 
         return 2;
     }
 
-    // 2. Dispatch Logic
-    if (default_flags) {
-        return use_default(verbose, argv);
+    // 1.1 Version Normalization (Major to Latest)
+    if (strncmp(version_input, "v", 1) == 0) {
+        int major = atoi(version_input + 1);
+        char* latest = get_latest_of_major(major);
+        if (latest != NULL) {
+            strncpy(target_version, latest + 1, sizeof(target_version) - 1);
+            free(latest);
+        } else {
+            strncpy(target_version, version_input + 1, sizeof(target_version) - 1);
+        }
     } else {
-        return use_user(verbose, argv);
+        strncpy(target_version, version_input, sizeof(target_version) - 1);
+    }
+
+    // 2. Dispatch Logic
+    char *dispatch_argv[] = { target_version };
+    if (default_flags) {
+        return use_default(verbose, dispatch_argv);
+    } else {
+        return use_user(verbose, dispatch_argv);
     }
 }
 
 /**
  * Handles system-wide Node.js version switching.
- * Requires root privileges.
+ * Efficiently uses symlinks instead of copying data.
  */
 int use_default(bool *verbose, char *argv[]) {
     log_info(true, "Initializing global switch to Node.js v%s", argv[0]);
 
     // 1. Privilege Check
     if (getuid() != 0) {
-        log_error("Root privileges required for global configuration (current UID: %d)", getuid());
+        log_error("Root privileges required for global configuration");
         errno = EACCES;
         return 2;
     }
 
-    // 2. Source Existence Check
-    char path[512];
-    snprintf(path, sizeof(path), "%s/%s/source", NODE_INSTALL_DIR, argv[0]);
-    if (access(path, F_OK) != 0) {
-        log_error("Installation not found: version '%s' is not in %s", argv[0], NODE_INSTALL_DIR);
+    // 2. Installation Existence Check
+    char version_path[512];
+    snprintf(version_path, sizeof(version_path), "%s/%s", NODE_INSTALL_DIR, argv[0]);
+    
+    if (access(version_path, F_OK) != 0) {
+        log_error("Version '%s' is not installed in %s", argv[0], NODE_INSTALL_DIR);
         errno = ENOENT;
         return 2;
     }
 
-    // 3. Global Synchronization
-    log_info(*verbose, "Synchronizing version '%s' to global default...", argv[0]);
+    // 3. Global Symlink Synchronization (Production Grade)
+    log_info(*verbose, "Updating global default symlink to v%s", argv[0]);
     
-    if (command(verbose, "cp -r %s/%s/source %s/default/", NODE_INSTALL_DIR, argv[0], NODE_INSTALL_DIR) != 0) {
-        log_error("Failed to copy source to default directory");
-        return 1;
-    }
+    char default_path[512];
+    snprintf(default_path, sizeof(default_path), "%s/default", NODE_INSTALL_DIR);
 
-    if (command(verbose, "ln -snf %s/default/source/bin %s/default/bin", NODE_INSTALL_DIR, NODE_INSTALL_DIR) != 0) {
-        log_error("Failed to update global symlinks");
+    if (symlink_force(verbose, version_path, default_path) != 0) {
+        log_error("Failed to update global 'default' symlink");
         return 1;
     }
     
@@ -81,7 +97,7 @@ int use_default(bool *verbose, char *argv[]) {
 
 /**
  * Handles user-specific Node.js version switching.
- * Creates symlinks within the user's home directory.
+ * Provides isolation via per-version directory structure in $HOME.
  */
 int use_user(bool *verbose, char *argv[]) {
     char *home = getenv("HOME");
@@ -99,43 +115,55 @@ int use_user(bool *verbose, char *argv[]) {
         return 2;
     }
 
-    // 2. Source Path Validation
-    char pathNodejs[512];
-    snprintf(pathNodejs, sizeof(pathNodejs), "%s/%s/source", NODE_INSTALL_DIR, argv[0]);
-    if (access(pathNodejs, F_OK) != 0) {
-        log_error("Node.js version '%s' is not installed in %s", argv[0], NODE_INSTALL_DIR);
+    // 2. Source Validation (Using direct path to binary)
+    char node_bin[512];
+    snprintf(node_bin, sizeof(node_bin), "%s/%s/bin/node", NODE_INSTALL_DIR, argv[0]);
+    
+    if (access(node_bin, X_OK) != 0) {
+        log_error("Node.js v%s is not properly installed (binary not found)", argv[0]);
         errno = ENOENT;
         return 2;
     }
 
-    // 3. Local Directory Preparation
-    log_info(*verbose, "Preparing local directory structure in %s/.ndm", home);
-    if (command(verbose, "mkdir -p %s/.ndm/%s/bin", home, argv[0]) != 0) {
-        log_error("Failed to create local directory structure");
+    // 3. User Directory Preparation
+    log_info(*verbose, "Preparing isolated environment in %s/.ndm/%s", home, argv[0]);
+    char user_version_bin[512];
+    snprintf(user_version_bin, sizeof(user_version_bin), "%s/.ndm/%s/bin", home, argv[0]);
+    
+    if (command(verbose, "mkdir -p %s", user_version_bin) != 0) {
+        log_error("Failed to create user directory structure");
         return 1;
     }
 
-    // 4. Link Node.js Binaries
+    // 4. Binary Mapping (Direct Link for Performance)
     const char *binaries[] = {"node", "npm", "npx", "corepack"};
+    char source_file[512];
+    char dest_file[512];
+
     for (int i = 0; i < 4; i++) {
-        log_info(*verbose, "Linking binary [%s] for version %s", binaries[i], argv[0]);
-        if (command(verbose, "ln -snf %s/%s/bin/%s %s/.ndm/%s/bin/%s", 
-                    NODE_INSTALL_DIR, argv[0], binaries[i], home, argv[0], binaries[i]) != 0) {
+        snprintf(source_file, sizeof(source_file), "%s/%s/bin/%s", NODE_INSTALL_DIR, argv[0], binaries[i]);
+        snprintf(dest_file, sizeof(dest_file), "%s/%s", user_version_bin, binaries[i]);
+
+        log_info(*verbose, "Linking %s -> %s", binaries[i], dest_file);
+        if (symlink_force(verbose, source_file, dest_file) != 0) {
             log_error("Failed to link binary: %s", binaries[i]);
             return 1;
         }
     }
 
-    // 5. Update Active Symlink (Atomic Switch)
+    // 5. Atomic Active Switch
     log_info(*verbose, "Updating active environment symlink...");
-    if (command(verbose, "ln -snf %s/.ndm/%s/bin %s/.ndm/bin", home, argv[0], home) != 0) {
-        log_error("Failed to update active symlink at %s/.ndm/bin", home);
+    char active_link[512];
+    snprintf(active_link, sizeof(active_link), "%s/.ndm/bin", home);
+
+    if (symlink_force(verbose, user_version_bin, active_link) != 0) {
+        log_error("Failed to update active symlink");
         return 1;
     }
 
-    // 6. Update Configuration Files
+    // 6. Config & State Persistence
     char path_buf[1024];
-    log_info(*verbose, "Updating .npmrc and active version file");
+    log_info(*verbose, "Finalizing .npmrc and active state");
 
     snprintf(path_buf, sizeof(path_buf), "%s/.npmrc", home);
     file_write(path_buf, false, "prefix=%s/.ndm/%s/", home, argv[0]);

@@ -4,6 +4,16 @@ VERSION="2.0.0"
 TAR_NAME="nodeman-${VERSION}-linux.tar.xz"
 EXTRACTED_DIR="nodeman-${VERSION}-linux"
 INSTALL_PATH="/opt/nodeman"
+DEPENDENCIES=("tar" "xz" "curl")
+
+for cmd in "${DEPENDENCIES[@]}"; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "[ERROR] Command $cmd not found. please install $cmd"
+        exit 1
+    fi
+done
+
+if ! command -v systemctl &> /dev/null; then echo "Error: This tool requires a systemd-based OS."
 
 # 0. Privilege Check
 if [ "$(id -u)" -ne 0 ]; then

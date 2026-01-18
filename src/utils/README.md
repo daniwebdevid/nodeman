@@ -1,45 +1,42 @@
-# NDM Utilities Kit 🛠️
+# NDM Core Components 🧠
 
-This directory houses the shared utility functions used across **NDM**. These modules abstract system-level operations like process forking, file I/O, and terminal logging to keep the core logic clean and readable.
+This directory contains the core business logic of **NDM**. These modules define how Node.js versions are installed, switched, and managed within the Linux filesystem.
 
-## 📌 Utility Overview
+## 📌 Logic Overview
 
-These utilities are designed to be "plug-and-play" within the NDM ecosystem. They handle the "dirty work" of interacting with the Linux OS.
+The core modules interact with the utilities in `src/utils` to perform high-level operations. Every command available in the CLI maps directly to a function here.
 
-## 🛠 Helper Modules
+## 🛠 Modules Breakdown
 
-| File | Tool Type | Description |
+| File | Purpose | Key Features |
 | :--- | :--- | :--- |
-| **`command.c`** | **Process Exec** | Wrapper for `fork`, `execvp`, and `popen`. Handles silent vs verbose execution. |
-| **`print.c`** | **Logger** | Pretty-prints colored logs (`INFO`, `WARN`, `ERROR`) to the terminal. |
-| **`file.c`** | **File I/O** | Simple formatted wrapper for `fopen` to write/append config files. |
-| **`arch.c`** | **System Info** | Maps `uname` results to official Node.js architecture strings. |
+| **`install.c`** | Version Acquisition | Integrity check (SHA256), architecture detection, and cached downloads. |
+| **`use.c`** | Environment Switching | Atomic symlinking (User/Global) and `.npmrc` configuration. |
+| **`list.c`** | Discovery | Local directory scanning and remote version fetching via `index.tab`. |
+| **`remove.c`** | System Cleanup | Safe recursive deletion and privilege validation. |
+| **`help.c`** | UI/UX Guidance | Standardized CLI documentation and command examples. |
 
-## ⚙️ How They Work
+## ⚙️ Core Implementation Details
 
-### 🚀 Command Execution (`command.c`)
-- **`command()`**: Uses `fork()` and `execvp()` to run system tools like `tar`, `ln`, and `rm`. 
-- **Output Management**: If `--verbose` is off, it redirects `stdout` and `stderr` to `/dev/null` to keep the UI clean.
-- **`command_output()`**: Specifically designed to capture the first line of a command's output (like HTTP status codes from `curl`).
+### 📥 Production-Grade Installation (`install.c`)
+- **Integrity**: Uses `sha256sum` and `awk` to verify downloaded tarballs against official Node.js SHASUMS.
+- **Caching**: Implements a caching mechanism in `/var/cache/nodeman` to prevent redundant downloads.
+- **Normalization**: Supports major-only input (e.g., `ndm install 20`) by resolving it to the latest stable release.
 
-### 📝 Smart Logging (`print.c`)
-- Uses ANSI escape codes for colored output.
-- **Blue [INFO]**: Only visible if `--verbose` is active.
-- **Yellow [WARN]** & **Bold Red [ERROR]**: Always visible and printed to `stderr` for better error tracking.
+### 🔄 Dual-Scope Switching (`use.c`)
+- **User Scope**: Links binaries to `$HOME/.ndm/bin/` for isolated user environments.
+- **System Scope (`--default`)**: Re-links the global default version in `/opt/nodeman/default` (requires root).
+- **Atomic**: Leverages `symlink_force` to ensure version swaps are instantaneous and never leave broken links.
 
-### 📂 File Management (`file.c`)
-- **`file_write()`**: A variadic function (like `printf`) that opens a file, writes formatted content, and closes it immediately.
-- Primarily used for updating `.npmrc` and the `active` version file.
-
-### 💻 Arch Mapping (`arch.c`)
-- Converts Linux machine names (e.g., `x86_64`) into Node.js compatible strings (e.g., `x64`).
-- Supports `arm64`, `armv7l`, `ppc64le`, and `s390x`.
+### 🔍 Discovery Engine (`list.c`)
+- **Remote**: Parses `https://nodejs.org/dist/index.tab` using pipes to provide a fast, searchable list of versions.
+- **Local**: Efficiently scans `NODE_INSTALL_DIR` while ignoring internal management folders like `bin` or `active`.
 
 ## 📜 Principles
 
-1. **No Bloat**: Every utility solves exactly one problem.
-2. **Error Handling**: Most utilities return status codes that the core logic can use to trigger clean exits.
-3. **Safety**: Redirects output to `/dev/null` when not needed to avoid cluttering the user's terminal during background tasks.
+1. **Security**: Every module that modifies the system (install/remove) enforces `getuid() == 0` checks.
+2. **Efficiency**: Avoids over-engineering by using standard system calls and optimized pipes for remote data.
+3. **Safety**: Path traversal protection is baked into every input validation step.
 
 ---
 *Part of the NDM Project - High Performance Node Management*

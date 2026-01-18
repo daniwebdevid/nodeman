@@ -9,11 +9,9 @@
 #include "nodeman/utils.h"
 #include "nodeman/core.h"
 
-
-
 /**
  * Iterates through a directory and prints installed Node.js versions.
- * Filters out internal utility directories like 'bin', 'config', etc.
+ * Adheres to the new flat directory structure.
  */
 void print_dir_contents(const char *path, const char *label, bool *verbose) {
     DIR *d = opendir(path);
@@ -27,10 +25,10 @@ void print_dir_contents(const char *path, const char *label, bool *verbose) {
     int count = 0;
 
     while ((dir = readdir(d)) != NULL) {
-        // Skip hidden files/folders
+        // Skip hidden files/folders and parent/current pointers
         if (dir->d_name[0] == '.') continue;
 
-        // Skip internal management directories
+        // Skip internal management directories/files
         if (strcmp(dir->d_name, "bin") == 0 || 
             strcmp(dir->d_name, "config") == 0 || 
             strcmp(dir->d_name, "active") == 0 || 
@@ -38,6 +36,7 @@ void print_dir_contents(const char *path, const char *label, bool *verbose) {
             continue;
         }
 
+        // Standardized output: already assumes version names as folder names
         printf("  v%s\n", dir->d_name);
         count++;
     }
@@ -50,64 +49,35 @@ void print_dir_contents(const char *path, const char *label, bool *verbose) {
  * Fetches available Node.js versions from the official remote repository.
  */
 int list_remote(bool *verbose, int argc, char *argv[]) {
-    char *search_term = NULL;
+    char *filters[10];
+    int filter_count = 0;
 
-    // 1. Parse search flag
+    // 0. Filter Extraction
     for (int i = 0; i < argc; i++) {
-        if (argv[i] != NULL && strcmp(argv[i], "-s") == 0 && (i + 1) < argc) {
-            search_term = argv[i + 1];
-            break;
+        if (argv[i] && argv[i][0] != '-' && filter_count < 10) {
+            filters[filter_count++] = argv[i];
         }
     }
 
-    // 2. Build Remote Command
-    char cmd[512];
-    if (search_term != NULL) {
-        log_info(*verbose, "Filtering remote versions for pattern: %s", search_term);
-        snprintf(cmd, sizeof(cmd), "curl -s https://nodejs.org/dist/index.tab | awk 'NR>1 {print $1}' | grep '%s'", search_term);
-    } else {
-        log_info(*verbose, "Fetching available remote versions from nodejs.org...");
-        snprintf(cmd, sizeof(cmd), "curl -s https://nodejs.org/dist/index.tab | awk 'NR>1 {print $1}' | head -n 30");
+    // 1. Fetching Logic
+    int count = 0;
+    char **versions = get_remote_versions_array(verbose, filters, filter_count, &count);
+
+    if (!versions || count == 0) {
+        printf("\n--- No versions found matching criteria ---\n");
+        if (versions) free(versions);
+        return 0;
     }
 
-    // 3. Execution via popen
-    FILE *fp = popen(cmd, "r");
-    if (!fp) {
-        log_error("Failed to establish connection to remote repository");
-        errno = ECOMM;
-        return 1;
-    }
-
+    // 2. Display Result
     printf("\n--- Available Remote Versions ---\n");
-    char line[128];
-    while (fgets(line, sizeof(line), fp)) {
-        printf("  %s", line);
+    for (int i = 0; i < count; i++) {
+        printf("  %s\n", versions[i]);
+        // Limit output to 30 items if no specific filter is provided
+        if (filter_count == 0 && i >= 29) break; 
     }
 
-    return pclose(fp);
-}
-
-/**
- * Lists Node.js versions installed in the user's home directory.
- */
-int list_local(bool *verbose, int argc, char *argv[]) {
-    char path[512];
-    const char *home = getenv("HOME");
-    if (!home) {
-        log_error("Environment variable $HOME not found");
-        return 1;
-    }
-
-    snprintf(path, sizeof(path), "%s/.ndm", home);
-    print_dir_contents(path, "Local (User)", verbose);
-    return 0;
-}
-
-/**
- * Lists Node.js versions installed in the global system directory.
- */
-int list_system(bool *verbose, int argc, char *argv[]) {
-    print_dir_contents(NODE_INSTALL_DIR, "System (Global)", verbose);
+    free_versions_array(versions, count);
     return 0;
 }
 
@@ -118,7 +88,7 @@ int list(bool *verbose, int argc, char *argv[]) {
     bool is_remote = false;
     bool is_system = false;
 
-    // 1. Identify flags
+    // 1. Identify Flags
     for (int i = 0; i < argc; i++) {
         if (argv[i] == NULL) continue;
         if (strcmp(argv[i], "--remote") == 0 || strcmp(argv[i], "-r") == 0) {
@@ -128,76 +98,113 @@ int list(bool *verbose, int argc, char *argv[]) {
         }
     }
 
-    // 2. Dispatch to appropriate list function
+    // 2. Dispatch Logic
     if (is_remote) {
         return list_remote(verbose, argc, argv);
     }
     
     if (is_system) {
-        return list_system(verbose, argc, argv);
+        print_dir_contents(NODE_INSTALL_DIR, "System (Global)", verbose);
+        return 0;
     }
 
-    // 3. Default behavior
-    return list_local(verbose, argc, argv);
+    // 3. Default (Local) Logic
+    char path[512];
+    const char *home = getenv("HOME");
+    if (!home) {
+        log_error("Environment error: $HOME is not set");
+        errno = ENOENT;
+        return 1;
+    }
+
+    snprintf(path, sizeof(path), "%s/.ndm", home);
+    print_dir_contents(path, "Local (User)", verbose);
+    return 0;
 }
 
 /**
- * Fetches Node.js versions and stores them in a dynamic array.
- * @param search_term  Filter pattern (e.g., "v20") or NULL for all.
- * @param out_count    Pointer to store the number of versions found.
- * @return            Array of version strings (must be freed by caller).
+ * Fetches versions and filters them in-memory from index.tab.
  */
-char** get_remote_versions_array(bool *verbose, const char *search_term, int *out_count) {
-    char cmd[512];
+char** get_remote_versions_array(bool *verbose, char **filters, int filter_count, int *out_count) {
+    const char *cmd = "curl -s https://nodejs.org/dist/index.tab | awk 'NR>1 {print $1}'";
     char line[128];
     char **versions = NULL;
     int count = 0;
-    int capacity = 10; // Initial capacity
+    int capacity = 10;
 
-    // 1. Build Command
-    if (search_term != NULL) {
-        snprintf(cmd, sizeof(cmd), "curl -s https://nodejs.org/dist/index.tab | awk 'NR>1 {print $1}' | grep '%s'", search_term);
-    } else {
-        snprintf(cmd, sizeof(cmd), "curl -s https://nodejs.org/dist/index.tab | awk 'NR>1 {print $1}' | head -n 50");
-    }
-
-    // 2. Open Pipe
     FILE *fp = popen(cmd, "r");
     if (!fp) {
-        log_error("Failed to fetch remote versions for array mapping");
+        log_error("Network error: Failed to fetch remote index");
         return NULL;
     }
 
-    // 3. Allocate Initial Memory
     versions = malloc(capacity * sizeof(char *));
-    if (!versions) return NULL;
 
-    // 4. Fill Array
     while (fgets(line, sizeof(line), fp)) {
-        // Remove newline
         line[strcspn(line, "\n")] = 0;
 
-        // Resize array if capacity is reached
-        if (count >= capacity) {
-            capacity *= 2;
-            versions = realloc(versions, capacity * sizeof(char *));
+        bool match = (filter_count == 0); 
+
+        // Efficient prefix filtering
+        for (int i = 0; i < filter_count; i++) {
+            char prefix[16];
+            snprintf(prefix, sizeof(prefix), "v%s", filters[i]);
+            if (strncmp(line, prefix, strlen(prefix)) == 0) {
+                match = true;
+                break;
+            }
         }
 
-        // Store duplicate of the string
-        versions[count] = strdup(line);
-        count++;
+        if (match) {
+            if (count >= capacity) {
+                capacity *= 2;
+                char **tmp = realloc(versions, capacity * sizeof(char *));
+                if (!tmp) break; 
+                versions = tmp;
+            }
+            versions[count++] = strdup(line);
+        }
     }
 
     pclose(fp);
     *out_count = count;
-    
-    log_info(*verbose, "Mapped %d versions to memory array.", count);
     return versions;
 }
 
 /**
- * Helper to free the allocated version array.
+ * Fetches the latest stable version for a specific major version.
  */
+char* get_latest_of_major(int major) {
+    char target_prefix[16];
+    snprintf(target_prefix, sizeof(target_prefix), "v%d.", major);
+
+    FILE *fp = popen("curl -s https://nodejs.org/dist/index.tab", "r");
+    if (!fp) return NULL;
+
+    char line[256];
+    char *latest_version = NULL;
+    bool is_header = true;
+
+    while (fgets(line, sizeof(line), fp)) {
+        if (is_header) {
+            is_header = false;
+            continue;
+        }
+
+        char *version = strtok(line, "\t");
+        if (!version) continue;
+
+        // Since index.tab is sorted from newest to oldest, the first match is the latest.
+        if (strncmp(version, target_prefix, strlen(target_prefix)) == 0) {
+            latest_version = strdup(version);
+            break; 
+        }
+    }
+
+    pclose(fp);
+    return latest_version;
+}
+
 void free_versions_array(char **versions, int count) {
     if (!versions) return;
     for (int i = 0; i < count; i++) {
