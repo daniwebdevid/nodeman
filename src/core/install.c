@@ -37,7 +37,6 @@ int install(bool *verbose, char *argv[]) {
         return 2;
     }
 
-    // Normalisasi input ke target_version
     if (strncmp(version_input, "v", 1) == 0) {
         int major = atoi(version_input + 1);
         char* latest = get_latest_of_major(major);
@@ -56,7 +55,7 @@ int install(bool *verbose, char *argv[]) {
     snprintf(install_path, sizeof(install_path), "%s/%s", NODE_INSTALL_DIR, target_version);
 
     // 2. Local Conflict Check
-    if (command(verbose, "%s/bin/node -v > /dev/null 2>&1", install_path) == 0) {
+    if (command(false, "%s/bin/node -v > /dev/null 2>&1", install_path) == 0) {
         log_error("Installation skipped: version '%s' already exists at %s", target_version, install_path);
         return 2;
     }
