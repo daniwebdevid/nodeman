@@ -5,20 +5,20 @@ All notable changes to the **NDM (Node Manager)** project will be documented in 
 ## [2.2.0] - 2026-01-21
 
 ### Added
-* [cite_start]**Command Output Capture**: Added a specialized utility `command_output` in `utils.c` to capture and process string outputs from system commands (e.g., SHA256 sums). [cite: 971, 998, 1039]
-* [cite_start]**Symlink Force Utility**: Introduced `src/utils/symlink.c` with `symlink_force` logic to handle atomic link updates and prevent conflicts during version switching. [cite: 972, 1001]
-* [cite_start]**Dependency Validation**: The `install.sh` script now explicitly verifies the presence of system dependencies (`tar`, `xz`, `curl`) before starting the installation. [cite: 1002, 1003, 1004]
-* [cite_start]**Multi-Filter Remote Search**: Enhanced `list_remote` to support multiple version filters simultaneously, allowing for more precise discovery. [cite: 694, 700]
+* **Command Output Capture**: Introduced `command_output` utility to capture and sanitize stdout from system processes, enabling programmatic handling of external tool results.
+* **Atomic Symlink Utility**: Added `symlink_force` implementation to provide robust, fail-safe symlink creation by automatically handling existing path conflicts.
+* **Dependency Guard**: Added pre-install validation in `install.sh` to ensure `curl`, `tar`, and `xz` are present before execution.
+* **Enhanced Remote Filtering**: Improved version discovery logic to handle advanced filtering patterns for remote Node.js releases.
 
 ### Changed
-* [cite_start]**Flat Directory Structure**: Migrated Node.js installations to a flatter directory structure in `/opt/nodeman` for better performance and easier management. [cite: 1113, 1114]
-* [cite_start]**Improved Install Logic**: Refactored `install.c` to use the new caching and integrity verification flow, ensuring production-grade stability. [cite: 1040, 1042]
-* [cite_start]**Standardized Logging**: Updated internal logging to use pointer-based verbosity flags for consistent state management across modules. [cite: 991, 993]
-* [cite_start]**Documentation Update**: Overhauled `README.md` and internal documentation to reflect the new architecture and zero-config principles. [cite: 917, 944, 1017]
+* **Internal Command Architecture**: Refactored command execution to use a cleaner fork/exec pattern with explicit pipe management for better resource handling.
+* **Path Management Refinement**: Updated installation paths and directory structures for better compliance with Linux filesystem hierarchy standards.
+* **Header-Driven Configuration**: Centralized core definitions and utility prototypes to improve compilation efficiency and maintainability.
+* **Error Reporting**: Improved terminal output for system-level errors, providing more context when commands or file operations fail.
 
 ### Security
-* [cite_start]**Checksum Verification Engine**: Finalized the integration of SHA256 verification using `awk` and `sha256sum` to validate Node.js binaries against official signatures. [cite: 913, 1097, 1101]
-* [cite_start]**Input Normalization**: Added version normalization in the installation process to prevent path-based attacks and ensure version consistency. [cite: 1048, 1055, 1060]
+* **Hardened Checksum Logic**: Refined the SHA256 verification engine to strictly validate binary integrity before any installation proceeds.
+* **Privilege Escalation Checks**: Standardized root privilege validation across all modules affecting the `/opt/nodeman` directory.
 
 ---
 

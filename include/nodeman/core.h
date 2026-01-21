@@ -8,7 +8,7 @@
  * Production-ready paths and versioning.
  */
 #define NODE_INSTALL_DIR "/opt/nodeman"
-#define NDM_VERSION      "2.1.0" 
+#define NDM_VERSION      "2.2.0" 
 
 /**
  * CLI Information & Help

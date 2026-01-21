@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=nodeman
+Exec=ndm
+Comment=a lightweight node version manager
+Terminal=true
+Icon=/opt/nodeman/config/nodeman.svg
+Type=Application
