@@ -5,6 +5,7 @@
 
 #include "nodeman/core.h"
 #include "nodeman/utils.h"
+#include "nodeman/tui.h"
 
 /**
  * Main entry point for ndm (Node Manager).
@@ -14,7 +15,7 @@ int main(int argc, char *argv[]) {
 
     // 0. Argument Check
     if(argc < 2) {
-        help();
+        main_menu();
         return 0;
     }
 
@@ -69,10 +70,12 @@ int main(int argc, char *argv[]) {
     
     // --- UTILS (Version & Help) ---
     else if(strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
-        printf("2.1.0\n");
+        printf("2.2.0\n");
+        return 0;
     } 
     else if(strcmp(argv[1], "help") == 0 || strcmp(argv[1], "-h") == 0) {
         help();
+        return 0;
     } 
     else {
         log_error("Unknown command: '%s'", argv[1]);

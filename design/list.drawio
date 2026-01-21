@@ -1,0 +1,134 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+  <diagram name="Page-1" id="JrYu0inPcewOu4BvAmyK">
+    <mxGraphModel dx="1458" dy="882" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="hfeIrmKVb-MmHYC77gag-36" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Your Custom Engine (command.c)" vertex="1">
+          <mxGeometry height="312" width="320" x="60" y="496" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-37" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="ndm list" vertex="1">
+          <mxGeometry height="39" width="80" x="487" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-38" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Parse Flags" vertex="1">
+          <mxGeometry height="139" width="139" x="457" y="179" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-39" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Fetch Remote Versions" vertex="1">
+          <mxGeometry height="54" width="226" x="107" y="392" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-40" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Execute: command_output" vertex="1">
+          <mxGeometry height="54" width="250" x="95" y="521" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-41" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Fork and Pipe" vertex="1">
+          <mxGeometry height="54" width="160" x="140" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-42" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Exec: curl -s index.tab" vertex="1">
+          <mxGeometry height="54" width="217" x="111" y="729" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-43" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="In-Memory Prefix Filtering" vertex="1">
+          <mxGeometry height="54" width="243" x="99" y="858" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-44" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Print Remote List" vertex="1">
+          <mxGeometry height="54" width="183" x="129" y="962" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-45" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Scan NODE_INSTALL_DIR" vertex="1">
+          <mxGeometry height="54" width="256" x="399" y="392" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-46" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Scan HOME/.ndm" vertex="1">
+          <mxGeometry height="54" width="189" x="705" y="392" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-47" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Skip: bin, config, active, etc" vertex="1">
+          <mxGeometry height="54" width="254" x="536" y="521" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-48" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Display Results" vertex="1">
+          <mxGeometry height="54" width="170" x="578" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-49" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="End" vertex="1">
+          <mxGeometry height="39" width="53" x="475" y="1066" as="geometry" />
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-50" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-37" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hfeIrmKVb-MmHYC77gag-38" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-51" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-38" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.68;entryX=0.5;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-39" value="-r / --remote">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="355" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-52" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-39" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.5;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-40" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-53" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-40" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.5;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-41" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-54" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-41" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.5;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-42" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-55" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-42" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.5;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-43" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-56" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-43" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.5;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-44" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-57" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-38" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-45" value="-g / --system">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-58" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-38" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.7;entryX=0.5;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-46" value="default">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="799" y="355" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-59" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-45" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.22;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-47" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="527" y="496" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-60" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-46" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.78;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-47" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="799" y="496" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-61" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-47" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.5;entryY=0.01;rounded=0;" target="hfeIrmKVb-MmHYC77gag-48" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-62" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-44" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.01;entryY=0.4;rounded=0;" target="hfeIrmKVb-MmHYC77gag-49" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="1041" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hfeIrmKVb-MmHYC77gag-63" edge="1" parent="1" source="hfeIrmKVb-MmHYC77gag-48" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=1.01;entryY=0.32;rounded=0;" target="hfeIrmKVb-MmHYC77gag-49" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="663" y="1041" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

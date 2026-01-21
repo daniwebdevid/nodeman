@@ -1,46 +1,43 @@
-# NDM Core Components 🧠
+# NDM Core Module
 
-This directory contains the core logic for **NDM**. Each module handles a specific command-line action, ensuring a modular and maintainable architecture.
+This directory contains the primary business logic for the Node Manager. These modules handle version acquisition, environment orchestration, and filesystem state management.
 
-## 📌 Overview
+## Module Overview
 
-The core logic is written in C11 and interacts directly with the Linux filesystem and official Node.js distributions. All functions are designed to be called by the main CLI entry point.
+The core logic is implemented in C11 and follows a modular design where each file corresponds to a specific CLI command or lifecycle stage.
 
-## 🛠 Modules Breakdown
-
-| File | Purpose | Key Features |
+| File | Component | Technical Responsibility |
 | :--- | :--- | :--- |
-| **`install.c`** | Handles Node.js installation. | Arch detection, integrity verification, and tarball extraction. |
-| **`use.c`** | Manages version switching. | Atomic symlinking, dual-scope (user/global), and `.npmrc` updates. |
-| **`list.c`** | Versions discovery. | Remote fetching via `curl`, local directory scanning, and filtering. |
-| **`remove.c`** | Uninstallation logic. | Privilege validation, path traversal protection, and clean removal. |
-| **`help.c`** | Interface guidance. | Formatted CLI instructions and usage examples. |
+| **`install.c`** | Version Acquisition | SHA256 integrity verification, architecture mapping, and automated caching. |
+| **`use.c`** | Environment Manager | Atomic symlink manipulation for user and system-wide scopes. |
+| **`list.c`** | Discovery Engine | Remote index parsing and local directory scanning via array-based collection. |
+| **`remove.c`** | Cleanup Utility | Secure recursive deletion with privilege and path traversal validation. |
+| **`help.c`** | Interface Doc | CLI usage documentation and command-line examples. |
 
-## ⚙️ Logic Details
+## Implementation Details
 
-### 📥 Installation (`install.c`)
-- Fetches binaries directly from `https://nodejs.org/dist/`.
-- Validates system architecture (x64, arm64, etc.) before downloading.
-- Requires **Root Privileges** as it writes to the global installation directory.
+### Installation & Integrity (`install.c`)
+The installation process is designed for production stability:
+- **Checksum Validation**: Downloads the official `SHASUMS256.txt` and uses `awk` to extract the specific hash for the detected architecture. It then performs a `sha256sum` check before extraction.
+- **Cache Management**: Binaries are cached in `/var/cache/nodeman` to reduce bandwidth consumption for repeated installations.
+- **Resolution**: Supports major-version aliases (e.g., `20` -> `20.x.x`) by resolving the latest stable release from the remote index.
 
-### 🔄 Switching (`use.c`)
-- **User Mode**: Creates local symlinks in `$HOME/.ndm/bin` and updates the user's `$PATH` configuration.
-- **Global Mode (`--default`)**: Replaces the system-wide source to update the default Node.js version for all users.
+### Atomic Version Switching (`use.c`)
+NDM ensures that version switching does not leave the system in a broken state:
+- **Symlink Force**: Uses the `symlink_force` utility to atomically swap binary links in `/usr/local/bin` (system) or `$HOME/.ndm/bin` (user).
+- **Dual Scope**: Supports independent user environments while maintaining a global system default if requested via the `--default` flag.
 
-### 🔍 Listing (`list.c`)
-- **Local**: Scans `$HOME/.ndm`.
-- **System**: Scans the global `NODE_INSTALL_DIR`.
-- **Remote**: Uses `curl` and `awk` to parse the official Node.js version table.
+### Version Discovery (`list.c`)
+The discovery module provides two methods of data retrieval:
+- **Standard Output**: Prints formatted lists directly to the terminal.
+- **Data Arrays**: Provides `get_local_versions_array` and `get_remote_versions_array` for programmatic access, specifically utilized by the TUI module.
+- **Filtering**: Automatically excludes internal management directories such as `bin`, `active`, and `config` during local scans.
 
-### 🗑 Removal (`remove.c`)
-- Performs a safety check to prevent accidental deletion of system directories.
-- Uses a recursive removal process to ensure no leftover artifacts remain.
+## Security Principles
 
-## 📜 Security Principles
-
-* **Privilege Escalation**: Functions that modify global state (install/remove/default use) strictly enforce `getuid() == 0` checks.
-* **Path Sanitization**: All version inputs are checked for `/` to prevent path traversal attacks.
-* **Atomic Operations**: Environment updates (like switching versions) are done via symlink swaps to prevent broken states.
+- **Privilege Validation**: Commands affecting the global state (`install`, `remove`, `use --default`) enforce `getuid() == 0` checks.
+- **Input Sanitization**: Strictly prohibits path traversal by checking for `/` characters in version strings before filesystem operations.
+- **Process Isolation**: External tools like `tar` and `curl` are executed via `fork/execvp` wrappers to maintain controlled execution environments.
 
 ---
-*Part of the NDM Project - High Performance Node Management*
+*NDM Project - Core Logic Documentation*

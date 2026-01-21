@@ -45,5 +45,6 @@ int list_remote(bool *verbose, int argc, char *argv[]);
 char* get_latest_of_major(int major);
 char** get_remote_versions_array(bool *verbose, char **filters, int filter_count, int *out_count);
 void free_versions_array(char **versions, int count);
+char** get_local_versions_array(const char *path, int *out_count);
 
 #endif // CORE_H

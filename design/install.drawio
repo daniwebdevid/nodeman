@@ -1,0 +1,169 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.2.9 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.2.9">
+  <diagram name="Page-1" id="5t-14d9XsKTZfjoxBC-2">
+    <mxGraphModel dx="1458" dy="882" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-6" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="Start Install" vertex="1">
+          <mxGeometry height="39" width="105" x="473" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-7" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Is Root? &#xa; getuid == 0" vertex="1">
+          <mxGeometry height="158" width="158" x="447" y="349" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Root Required" vertex="1">
+          <mxGeometry height="54" width="236" x="280" y="641" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-9" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Validate Input &#xa; &amp;amp; Normalize" vertex="1">
+          <mxGeometry height="175" width="175" x="566" y="581" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Invalid Version" vertex="1">
+          <mxGeometry height="54" width="237" x="402" y="901" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-11" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Check if &#xa; Already Installed" vertex="1">
+          <mxGeometry height="196" width="196" x="689" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-12" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_info: Version Exists" vertex="1">
+          <mxGeometry height="54" width="225" x="545" y="1169" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-13" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Check Cache &#xa; .tar.xz &amp;amp; .txt.asc" vertex="1">
+          <mxGeometry height="191" width="191" x="820" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-14" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Check nodejs.org &#xa; via HTTP 200" vertex="1">
+          <mxGeometry height="203" width="203" x="732" y="1365" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-15" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Not Found" vertex="1">
+          <mxGeometry height="54" width="208" x="588" y="1653" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-16" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Download Tarball &amp; SHASUMS" vertex="1">
+          <mxGeometry height="78" width="260" x="845" y="1641" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-17" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Verify SHA256 &#xa; vs SHASUMS" vertex="1">
+          <mxGeometry height="182" width="182" x="967" y="1769" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-18" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Checksum Failed" vertex="1">
+          <mxGeometry height="54" width="257" x="801" y="2038" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-19" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Extract tar -xf &#xa; to install_path" vertex="1">
+          <mxGeometry height="78" width="159" x="1107" y="2026" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-20" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="Success" vertex="1">
+          <mxGeometry height="39" width="85" x="1035" y="2185" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-21" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Extraction Failed" vertex="1">
+          <mxGeometry height="54" width="252" x="1170" y="2178" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-22" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-6" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-7" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-23" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-7" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.95;entryX=0.5;entryY=0.01;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-8" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="398" y="544" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-24" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-7" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.95;entryX=0.5;entryY=0;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-9" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="653" y="544" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-25" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-9" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.96;entryX=0.5;entryY=0;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-10" value="Invalid/Path Traversal">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="793" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-26" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-9" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.96;entryX=0.5;entryY=0;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-11" value="Valid">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="787" y="793" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-27" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-11" style="curved=1;startArrow=none;endArrow=block;exitX=0.02;exitY=1;entryX=0.5;entryY=-0.01;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-12" value="Exists">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="658" y="1063" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-28" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-11" style="curved=1;startArrow=none;endArrow=block;exitX=0.98;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-13" value="Not Found">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="916" y="1063" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-29" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-13" style="curved=1;startArrow=none;endArrow=block;exitX=0.19;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-14" value="Incomplete">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="833" y="1328" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-30" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-14" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.98;entryX=0.5;entryY=0.01;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-15" value="404">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="691" y="1604" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-31" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-14" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.98;entryX=0.5;entryY=0.01;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-16" value="200">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="975" y="1604" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-32" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-16" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.14;entryY=0;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-17" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="975" y="1744" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-33" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-13" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.8;entryX=0.85;entryY=0;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-17" value="Hit">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1140" y="1328" />
+              <mxPoint x="1140" y="1744" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-34" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-17" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=1;entryX=0.5;entryY=-0.01;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-18" value="Mismatch">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="929" y="1989" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-35" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-17" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=1;entryX=0.5;entryY=-0.01;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-19" value="Match">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1187" y="1989" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-36" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-19" style="curved=1;startArrow=none;endArrow=block;exitX=0.15;exitY=0.99;entryX=0.5;entryY=0;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-20" value="Success">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1077" y="2141" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-37" edge="1" parent="1" source="FTBBBBzouVQGUwf0Wa6C-19" style="curved=1;startArrow=none;endArrow=block;exitX=0.85;exitY=0.99;entryX=0.5;entryY=-0.01;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-21" value="Fail">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1296" y="2141" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
