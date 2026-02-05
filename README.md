@@ -16,7 +16,7 @@ NDM is a high-performance, lightweight Node.js version manager written in C11. I
 For a fast, automated installation, execute the following command:
 
 ```bash
-curl -fsSL [https://github.com/daniwebdevid/nodeman/releases/download/v2.3.0/install.sh](https://github.com/daniwebdevid/nodeman/releases/download/v2.3.0/install.sh) | bash
+curl -fsSL https://github.com/daniwebdevid/nodeman/releases/download/v2.3.0/install.sh | sudo bash
 
 ```
 
@@ -25,7 +25,7 @@ curl -fsSL [https://github.com/daniwebdevid/nodeman/releases/download/v2.3.0/ins
 If you prefer to compile NDM manually, ensure you have `gcc`, `cmake`, `libncurses-dev`, `libcurl`, and `xz-utils` installed.
 
 ```bash
-git clone [https://github.com/daniwebdevid/nodeman.git](https://github.com/daniwebdevid/nodeman.git)
+git clone https://github.com/daniwebdevid/nodeman.git
 cd nodeman
 mkdir build && cd build
 cmake .. && make
