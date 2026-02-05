@@ -24,7 +24,7 @@ NDM is a high-performance, lightweight Node.js version manager written in C11. I
 Requires `gcc`, `cmake`, `libncurses-dev`, `libcurl`, and `xz-utils`.
 
 ```bash
-git clone [https://github.com/daniwebdevid/nodeman.git](https://github.com/daniwebdevid/nodeman.git)
+git clone https://github.com/daniwebdevid/nodeman.git
 cd nodeman
 mkdir build && cd build
 cmake .. && make
