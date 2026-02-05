@@ -1,43 +1,46 @@
-# NDM Source Entry (CLI) 🚀
+# NDM Source Core
 
-This directory contains the main entry point for the **NDM** application. It acts as the "brain" that orchestrates user commands, parses global flags, and dispatches tasks to the core modules.
+This directory contains the entry point and high-level orchestrators for the Node Manager (NDM). As of version 2.3.0, the source architecture focuses on automated environment initialization and multi-interface support.
 
-## 📌 Architecture Flow
+## Application Lifecycle (v2.3.0)
 
-The application follows a simple but powerful dispatch pattern:
-1. **CLI Input**: User runs a command (e.g., `ndm install 20`).
-2. **Flag Parsing**: `main.c` scans for global options like `--verbose`.
-3. **Dispatcher**: The command is matched, and control is handed over to the appropriate module in `src/core/`.
+The execution flow follows a prioritized sequence to ensure the environment is always synchronized:
 
-## 🛠 File Overview
+1. **System Initialization (`start`)**: Before parsing any CLI arguments, `main.c` invokes the `start()` logic to perform environment validation and project-based version discovery.
+2. **Flag and Scope Parsing**: The application identifies global flags (e.g., `--verbose`) and determines if the user is requesting an interactive session or a direct command.
+3. **Module Dispatching**: Control is handed off to one of the three primary sub-systems:
+    - **Interactive Layer**: The `tui/` module for visual management.
+    - **Logic Layer**: The `core/` module for standard CLI operations.
+    - **Utility Layer**: The `utils/` module for low-level system tasks.
 
-| File | Role | Responsibility |
+## Directory Structure
+
+| Component | Role | Technical Responsibility |
 | :--- | :--- | :--- |
-| **`main.c`** | **Entry Point** | Handles command routing, error exit codes, and global state initialization. |
+| **`main.c`** | Entry Point | Handles global state, CLI routing, and lifecycle orchestration. |
+| **`core/`** | Logic Engine | Implements installation, removal, and the new `start` lifecycle. |
+| **`tui/`** | Interactive UI | Provides an ncurses-based interface for version management. |
+| **`utils/`** | System Helpers | Abstractions for file I/O, process forking, and architecture detection. |
 
-## ⚙️ How it Works
+## Key Implementation Details
 
-### 🧩 Command Dispatching
-`main.c` menggunakan perbandingan string yang efisien untuk memetakan argumen CLI ke fungsi internal:
-- **`install`** → Memanggil `install()` dengan offset argumen `+2`.
-- **`use`** → Mengatur *scope* switching (user/global) melalui fungsi `use()`.
-- **`list`** → Menangani penemuan versi lokal maupun remote.
-- **`remove`** → Menjalankan logika uninstaller.
+### Automated Lifecycle (`start.c`)
+Unlike previous versions, v2.3.0 introduces a mandatory startup phase. The `start()` function performs "directory climbing" to find `.ndmrc` files, ensuring that your Node.js version automatically matches your project's requirements as soon as you execute NDM.
 
-### 🚩 Global Flag: `--verbose`
-NDM mendukung flag `--verbose` di posisi mana pun dalam argumen. Jika terdeteksi, variabel boolean `verbose` akan diaktifkan dan dipassing ke semua fungsi core dan utils untuk membuka log sistem yang detail.
+### Command Dispatching logic
+The dispatcher in `main.c` uses optimized string comparisons to route user inputs:
+- **`ndm tui`**: Suspends standard CLI output to launch the ncurses interactive terminal.
+- **`ndm install/use/remove`**: Routes directly to the core engine with sanitized arguments.
 
-### 🛡 Error Handling & Exit Codes
-Aplikasi ini dirancang untuk produksi dengan kode keluar (exit codes) yang standar:
-- `0`: Operasi sukses.
-- `2`: Kesalahan input user atau masalah hak akses (Privilege Error).
-- `1`: Kesalahan sistem internal atau kegagalan perintah luar (Runtime Error).
+### Resource and Error Management
+- **Verbosity**: A pointer-based verbose flag is propagated through all modules to control system log output.
+- **Exit Codes**: Implements standardized POSIX exit codes (0 for success, 1 for runtime failures, 2 for privilege or input errors).
 
-## 📜 Principles
+## Engineering Standards
 
-1. **Efficiency**: Tidak ada alokasi memori yang berat di tahap routing awal.
-2. **Predictability**: Pesan error yang seragam jika user lupa memasukkan argumen versi.
-3. **Clean Exit**: Menggunakan `errno` untuk memberikan konteks tambahan saat aplikasi gagal.
+1. **Non-Blocking Initialization**: The `start()` phase is designed to be lightweight, ensuring no perceived lag during standard CLI usage.
+2. **Interface Parity**: Both CLI and TUI modes utilize the exact same core functions to ensure behavioral consistency.
+3. **Memory Safety**: Entry points are responsible for triggering the cleanup of dynamic structures used during the execution phase.
 
 ---
-*Part of the NDM Project - High Performance Node Management*
+*NDM Project - Source Architecture Documentation (v2.3.0)*

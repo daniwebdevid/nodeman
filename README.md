@@ -1,44 +1,33 @@
-# NDM (Node Manager) 🚀
+# NDM (Node Manager)
 
-A high-performance, lightweight Node.js version manager written in C for Linux systems.
+NDM is a high-performance, lightweight Node.js version manager written in C11. It is engineered for Linux environments that require a native, zero-overhead alternative to shell-based managers. Version 2.3.0 introduces automated project-based environment synchronization and an interactive TUI.
 
-## 📌 Overview
+## Key Features
 
-**NDM** is a native Linux utility designed to manage Node.js installations with zero overhead. Built with C11, it provides instant version switching through atomic symlink manipulation and system-wide environment integration.
+- **Automated Lifecycle**: Implements a recursive "directory climbing" algorithm that detects `.ndmrc` files and automatically synchronizes the Node.js environment upon execution.
+- **Interactive TUI**: Built-in ncurses interface for visual management of local, system, and remote versions.
+- **Production-Grade Integrity**: Mandatory SHA256 checksum verification with an automated 3-attempt retry mechanism to recover from corrupted downloads.
+- **Zero Runtime Overhead**: Compiled as a native binary to eliminate the latency and dependency overhead associated with shell-script wrappers.
+- **Dual-Scope Orchestration**: Independent management of user-local environments and system-wide global defaults via atomic symlinking.
+- **Smart Architecture Mapping**: Automatically detects host architecture (x64, arm64, armv7l) to fetch compatible binary distributions.
 
-## ✨ Features
+## Project Structure
 
-* **Zero Shell Overhead**: Native C binary execution, no heavy shell scripts or slow interpretation.
-* **Dual-Scope Management**: Manage system-wide (global) defaults and user-specific local environments.
-* **Production Integrity**: Built-in **SHA256 checksum verification** for every Node.js download.
-* **Smart Caching**: Implements a caching mechanism in `/var/cache/nodeman` to speed up repeated installs.
-* **Architecture Mapping**: Automatically detects and maps system architecture (x64, arm64, etc.) to official Node.js distributions.
-* **Atomic Switching**: Uses `symlink_force` logic to ensure binary swaps are clean and never leave broken states.
-* **Zero-Config PATH**: Automatically handles environment variables via `/etc/profile.d/`—no manual `.bashrc` editing required.
+The codebase follows a modular architecture for maximum maintainability:
 
-## 🛠 Tech Stack
+- **`src/`**: Main entry point and system lifecycle orchestration.
+- **`src/core/`**: Core logic for version acquisition, removal, and the `start` sequence.
+- **`src/tui/`**: State machine and rendering engine for the interactive terminal interface.
+- **`src/utils/`**: Low-level POSIX wrappers for process execution, atomic file I/O, and link management.
+- **`include/`**: Technical contracts and global configurations.
 
-* **Language**: C11.
-* **Build System**: CMake 3.10+.
-* **Core Helpers**: `curl`, `tar`, `xz-utils`, `systemd`.
+## Installation
 
-## 🚀 Installation
+### Prerequisites
+Requires `gcc`, `cmake`, `libncurses-dev`, `libcurl`, and `xz-utils`.
 
-### 1. Quick Install (Recommended)
-The fastest way to get NDM up and running. This script installs the binary, and **automatically configures your PATH**.
-
+### Build and Install
 ```bash
-curl -sL https://raw.githubusercontent.com/daniwebdevid/nodeman/v2.2.0/install.sh | sudo bash
-
-```
-
-### 2. Build from Source
-
-If you prefer to compile NDM yourself:
-
-Bash
-
-```
 git clone https://github.com/daniwebdevid/nodeman.git
 cd nodeman
 mkdir build && cd build
@@ -48,31 +37,44 @@ sudo make install
 
 ```
 
-## 📖 Usage
+## Usage
+
+### 1. Interactive TUI
+
+Launch the visual management console:
+
+Bash
+
+```
+ndm
+
+```
+
+_Navigation: `1-3` to switch views, `j/k` to scroll, `Enter` to install/use, `q` to quit._
+
+### 2. CLI Mode
+
+Direct execution for terminal use or CI/CD pipelines:
 
 **Command**
 
-**Description**
+**Action**
 
 `ndm install <version>`
 
-Installs Node.js (e.g., `ndm install 20` or `20.11.0`).
+Installs Node.js with integrity verification.
 
 `ndm use <version>`
 
-Switches the current user to the specified version.
+Switches version for the current user scope.
 
 `ndm use <version> --default`
 
-Sets the global system default version (Requires Root).
+Sets global system version (Requires Sudo).
 
 `ndm list`
 
-Lists installed versions for the current user.
-
-`ndm list --system`
-
-Lists globally installed versions.
+Displays local and system installations.
 
 `ndm list --remote`
 
@@ -80,42 +82,24 @@ Fetches available versions from nodejs.org.
 
 `ndm remove <version>`
 
-Uninstalls a specific version (Requires Root).
+Uninstalls a version and purges associated symlinks.
 
-### Global Options
+## Technical Implementation
 
--   `--verbose`: Show detailed logs, system commands, and network output.
+-   **Standard**: C11 / POSIX compliant.
     
--   `-v, --version`: Show NDM version.
+-   **Auto-Switching**: The `start()` function is triggered at the entry phase to check for project-specific configuration files.
     
--   `-h, --help`: Show help guide.
+-   **Memory Safety**: Uses dynamic array collection with strictly enforced deallocation via `free_versions_array`.
     
-
-## ⚙️ How it Works (Zero-Config)
-
-NDM is designed to be production-ready out of the box:
-
-1.  **Environment**: It integrates with `/etc/profile.d/nodeman.sh` and `/etc/environment.d/` for seamless PATH management.
-    
-2.  **Security**: Enforces `getuid() == 0` for system-wide changes and includes path traversal protection.
-    
-3.  **Smart Resolution**: If you type `ndm install 20`, NDM automatically finds the latest stable release of Node 20.
+-   **Security**: Enforces privilege validation for system-wide changes and implements path traversal protection on all version inputs.
     
 
-> **Note**: After the first installation, you may need to restart your terminal or re-login to apply global environment changes.
+## License
 
-## 📜 License
-
-This program is free software: you can redistribute it and/or modify it under the terms of the **GNU General Public License v3**.
-
-See the [LICENSE](https://www.google.com/search?q=LICENSE) file for more details.
+Licensed under the GNU General Public License v3.
 
 ----------
 
-Developed by Dany Saputra
-
-High-performance Node.js management for Linux.
-
-----------
-
+**Developed by Dany Saputra** | _High-Performance Node Management for Linux_
 

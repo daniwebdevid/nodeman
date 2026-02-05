@@ -2,6 +2,27 @@
 
 All notable changes to the **NDM (Node Manager)** project will be documented in this file.
 
+## [2.3.0] - 2026-02-05
+
+### Added
+* [cite_start]**Project-based Auto Switching**: Introduced `start()` lifecycle module that performs directory climbing to detect `.ndmrc` files and automatically syncs the Node.js version[cite: 14, 79, 120].
+* [cite_start]**Robust Installation Retries**: Implemented automated recovery flow in `install.c` that retries corrupted downloads up to 3 times after checksum failure[cite: 115, 124, 141].
+* [cite_start]**Environment Initialization**: Added `start` command to handle initial environment validation and system setup[cite: 14, 42, 153].
+* [cite_start]**File Read Utility**: Added `open_file` to the utility kit for efficient first-line buffer capture, used for state and configuration discovery[cite: 56, 179, 208].
+* [cite_start]**TUI Versioning**: Updated TUI interface to reflect the latest version and improved state persistence[cite: 160].
+
+### Changed
+* [cite_start]**Environment Persistence**: Migrated PATH configuration from `systemd.conf` to `/etc/security/pam_env.conf` for broader shell compatibility[cite: 57].
+* [cite_start]**Memory Safety Discovery**: Refactored `list.c` to pair discovery calls with standardized deallocation via `free_versions_array`[cite: 19, 128].
+* [cite_start]**Optimized Download**: Updated `curl` flags to use `-continue-at` for better handling of interrupted downloads[cite: 140].
+* [cite_start]**Interface Parity**: Synchronized CLI and TUI modes to utilize identical core functions for behavioral consistency[cite: 93].
+
+### Security
+* [cite_start]**Strict Path Sanitization**: Reinforced validation in all version inputs to strictly prohibit path traversal attacks[cite: 130, 133].
+* [cite_start]**Production Path Hardening**: Hardcoded `NODE_INSTALL_DIR` to `/opt/nodeman` to ensure system-wide stability and privilege integrity[cite: 11, 40].
+
+---
+
 ## [2.2.0] - 2026-01-21
 
 ### Added
