@@ -212,3 +212,48 @@ void free_versions_array(char **versions, int count) {
     }
     free(versions);
 }
+
+/**
+ * Fetches installed versions into an array for TUI or internal processing.
+ * Filters management directories to ensure only Node versions are returned.
+ */
+char** get_local_versions_array(const char *path, int *out_count) {
+    DIR *d = opendir(path);
+    if (!d) {
+        *out_count = 0;
+        return NULL;
+    }
+
+    int capacity = 10;
+    int count = 0;
+    char **versions = malloc(capacity * sizeof(char *));
+    if (!versions) {
+        closedir(d);
+        return NULL;
+    }
+
+    struct dirent *dir;
+    while ((dir = readdir(d)) != NULL) {
+        if (dir->d_name[0] == '.') continue;
+        
+        if (strcmp(dir->d_name, "bin") == 0 || 
+            strcmp(dir->d_name, "config") == 0 || 
+            strcmp(dir->d_name, "active") == 0 ||
+            strcmp(dir->d_name, "default") == 0) {
+            continue;
+        }
+
+        if (count >= capacity) {
+            capacity *= 2;
+            char **tmp = realloc(versions, capacity * sizeof(char *));
+            if (!tmp) break; 
+            versions = tmp;
+        }
+
+        versions[count++] = strdup(dir->d_name);
+    }
+
+    closedir(d);
+    *out_count = count;
+    return versions;
+}

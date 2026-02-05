@@ -5,6 +5,7 @@
 
 #include "nodeman/core.h"
 #include "nodeman/utils.h"
+#include "nodeman/tui.h"
 
 /**
  * Main entry point for ndm (Node Manager).
@@ -12,16 +13,15 @@
  */
 int main(int argc, char *argv[]) {
 
-    // 0. Argument Check
+    // 0. Argument Check (Enter TUI mode if no args)
     if(argc < 2) {
-        help();
-        return 0;
+        return main_menu();
     }
 
-    // 1. Global Flags Parsing (e.g., --verbose)
+    // 1. Global Flags Parsing
     bool verbose = false;
     for (int i = 1; i < argc; i++) {
-        if(strcmp(argv[i], "--verbose") == 0) {
+        if(argv[i] && strcmp(argv[i], "--verbose") == 0) {
             verbose = true;
             break;
         }
@@ -67,13 +67,22 @@ int main(int argc, char *argv[]) {
         return remove_node_js(&verbose, argc - 2, argv + 2);
     } 
     
+    // --- START / INITIALIZATION ---
+    else if(strcmp(argv[1], "start") == 0) {
+        return start(&verbose);
+    }
+
     // --- UTILS (Version & Help) ---
     else if(strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
-        printf("2.1.0\n");
+        printf("2.3.0\n");
+        return 0;
     } 
     else if(strcmp(argv[1], "help") == 0 || strcmp(argv[1], "-h") == 0) {
         help();
+        return 0;
     } 
+    
+    // --- UNKNOWN COMMAND ---
     else {
         log_error("Unknown command: '%s'", argv[1]);
         log_error("Type '%s help' for available commands", argv[0]);

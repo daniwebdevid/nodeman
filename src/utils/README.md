@@ -1,42 +1,42 @@
-# NDM Core Components 🧠
+# NDM Utilities Kit
 
-This directory contains the core business logic of **NDM**. These modules define how Node.js versions are installed, switched, and managed within the Linux filesystem.
+This directory houses the shared utility functions and system abstractions for NDM. These modules handle low-level operations such as process orchestration, filesystem manipulation, and hardware detection.
 
-## 📌 Logic Overview
+## Module Overview (v2.3.0)
 
-The core modules interact with the utilities in `src/utils` to perform high-level operations. Every command available in the CLI maps directly to a function here.
-
-## 🛠 Modules Breakdown
-
-| File | Purpose | Key Features |
+| File | Tool Type | Responsibility |
 | :--- | :--- | :--- |
-| **`install.c`** | Version Acquisition | Integrity check (SHA256), architecture detection, and cached downloads. |
-| **`use.c`** | Environment Switching | Atomic symlinking (User/Global) and `.npmrc` configuration. |
-| **`list.c`** | Discovery | Local directory scanning and remote version fetching via `index.tab`. |
-| **`remove.c`** | System Cleanup | Safe recursive deletion and privilege validation. |
-| **`help.c`** | UI/UX Guidance | Standardized CLI documentation and command examples. |
+| **`command.c`** | **Process Exec** | Wrapper for `fork` and `execvp`. Handles silent vs. verbose execution modes. |
+| **`file.c`** | **File I/O** | Formatted writes and first-line stream reading for configuration management. |
+| **`print.c`** | **Logger** | ANSI-colored terminal logging (INFO, WARN, ERROR) with verbosity control. |
+| **`symlink.c`** | **Link Manager** | Atomic symlink creation with forced overwrite capabilities. |
+| **`arch.c`** | **System Info** | Maps `uname` machine names to official Node.js architecture strings. |
 
-## ⚙️ Core Implementation Details
+## Functional Specifications
 
-### 📥 Production-Grade Installation (`install.c`)
-- **Integrity**: Uses `sha256sum` and `awk` to verify downloaded tarballs against official Node.js SHASUMS.
-- **Caching**: Implements a caching mechanism in `/var/cache/nodeman` to prevent redundant downloads.
-- **Normalization**: Supports major-only input (e.g., `ndm install 20`) by resolving it to the latest stable release.
+### 1. Enhanced File I/O (`file.c`)
+The v2.3.0 update introduces robust reading capabilities to support automated environment discovery:
+- **`file_write()`**: A variadic wrapper for `fprintf` that ensures files are opened, written, and flushed atomically.
+- **`open_file()`**: **New in v2.3.0**. Reads the primary line of a file (e.g., `.ndmrc` or `active` state) into a buffer, automatically stripping newline characters.
 
-### 🔄 Dual-Scope Switching (`use.c`)
-- **User Scope**: Links binaries to `$HOME/.ndm/bin/` for isolated user environments.
-- **System Scope (`--default`)**: Re-links the global default version in `/opt/nodeman/default` (requires root).
-- **Atomic**: Leverages `symlink_force` to ensure version swaps are instantaneous and never leave broken links.
+### 2. Secure Process Orchestration (`command.c`)
+Decouples the core logic from shell dependencies:
+- **`command()`**: Executes system binaries directly via `execvp`, bypassing `/bin/sh` for better performance and security.
+- **Output Capture**: `command_output()` utilizes pipes to capture specific command results, essential for SHA256 verification.
 
-### 🔍 Discovery Engine (`list.c`)
-- **Remote**: Parses `https://nodejs.org/dist/index.tab` using pipes to provide a fast, searchable list of versions.
-- **Local**: Efficiently scans `NODE_INSTALL_DIR` while ignoring internal management folders like `bin` or `active`.
+### 3. Atomic Link Management (`symlink.c`)
+Crucial for the `use` command to prevent race conditions or "file exists" errors:
+- **`symlink_force()`**: Implements an `unlink`-then-`symlink` pattern to ensure the target link always points to the desired version without manual intervention.
 
-## 📜 Principles
+### 4. Smart Logging (`print.c`)
+- **Verbosity Levels**: `log_info` messages are suppressed unless the `--verbose` flag is active.
+- **Stream Redirection**: Critical errors and warnings are dispatched to `stderr` to ensure they are captured even if `stdout` is piped.
 
-1. **Security**: Every module that modifies the system (install/remove) enforces `getuid() == 0` checks.
-2. **Efficiency**: Avoids over-engineering by using standard system calls and optimized pipes for remote data.
-3. **Safety**: Path traversal protection is baked into every input validation step.
+## Engineering Principles
+
+- **POSIX Compliance**: Uses standard system headers to ensure portability across different Linux distributions.
+- **Zero-Dependency**: No external libraries required beyond standard C and ncurses (for TUI).
+- **Error Propagation**: Most utilities return integer status codes, allowing the Core module to handle failures gracefully.
 
 ---
-*Part of the NDM Project - High Performance Node Management*
+*NDM Project - Utility Layer Documentation (v2.3.0)*

@@ -60,10 +60,14 @@ int install(bool *verbose, char *argv[]) {
         return 2;
     }
 
+    int atempt = 0;
+    install:
     // 3. Remote Availability & Cache Check
     bool has_tarball = (access(tarball_path, F_OK) == 0);
     bool has_shasum = (access(shasum_path, F_OK) == 0);
 
+
+    atempt++;
     if (!has_tarball || !has_shasum) {
         log_info(*verbose, "Cache incomplete. Verifying remote distribution for v%s...", target_version);
         
@@ -83,7 +87,7 @@ int install(bool *verbose, char *argv[]) {
         if (!has_tarball) {
             log_info(*verbose, "Downloading Node.js tarball...");
             const char* arch = get_arch();
-            if (command(verbose, "curl --remove-on-error -fL -o %s https://nodejs.org/dist/v%s/node-v%s-linux-%s.tar.xz", 
+            if (command(verbose, "curl -continue-at -o %s https://nodejs.org/dist/v%s/node-v%s-linux-%s.tar.xz", 
                 tarball_path, target_version, target_version, arch) != 0) {
                 log_error("Failed to download tarball");
                 return 1;
@@ -118,11 +122,18 @@ int install(bool *verbose, char *argv[]) {
     actual_sha_line[strcspn(actual_sha_line, "\r\n")] = 0;
 
     if (strncmp(expected_sha, actual_sha_line, 64) != 0) {
-        log_error("Integrity Verification failed! Checksum mismatch.");
-        log_error("Expected: %s", expected_sha);
-        log_error("Actual:   %s", actual_sha_line);
-        errno = EBADMSG;
-        return 1;
+        if(atempt < 3) {
+            log_info(true, "Retrying installation... Attempt %d/3", atempt);
+            unlink(tarball_path);
+            unlink(shasum_path);
+            goto install;
+        } else {
+            log_error("Integrity Verification failed! Checksum mismatch.");
+            log_error("Expected: %s", expected_sha);
+            log_error("Actual:   %s", actual_sha_line);
+            errno = EBADMSG;
+            return 1;
+        }
     }
 
     // 6. Extraction & Finalization

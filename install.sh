@@ -1,6 +1,7 @@
 #!/bin/sh
 
-VERSION="2.1.0"
+VERSION="2.3.0"
+
 TAR_NAME="nodeman-${VERSION}-linux.tar.xz"
 EXTRACTED_DIR="nodeman-${VERSION}-linux"
 INSTALL_PATH="/opt/nodeman"
@@ -54,8 +55,12 @@ fi
 echo "Setting up symbolic links..."
 mkdir -p /etc/profile.d/
 ln -sf "${INSTALL_PATH}/config/profile.d.sh" /etc/profile.d/nodeman.sh
-mkdir -p /etc/environment.d/ 
-ln -sf  "${INSTALL_PATH}/config/systemd.conf" /etc/environment.d/60-nodeman.conf 
+
+cat << 'EOF' >> /etc/security/pam_env.conf
+NDM_HOME DEFAULT=${HOME}/.ndm
+PATH OVERRIDE=${NDM_HOME}/bin:${PATH}
+EOF
+
 
 # 6. Install Binary
 echo "Installing binary to /usr/local/bin..."

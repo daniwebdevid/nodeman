@@ -1,46 +1,47 @@
-# NDM Core Components 🧠
+# NDM Core Module
 
-This directory contains the core logic for **NDM**. Each module handles a specific command-line action, ensuring a modular and maintainable architecture.
+This directory contains the primary business logic for the Node Manager (NDM). These modules handle version acquisition, environment orchestration, and automated lifecycle management.
 
-## 📌 Overview
+## Module Overview
 
-The core logic is written in C11 and interacts directly with the Linux filesystem and official Node.js distributions. All functions are designed to be called by the main CLI entry point.
+The core logic is implemented in C11, focusing on high-performance execution and system safety.
 
-## 🛠 Modules Breakdown
-
-| File | Purpose | Key Features |
+| File | Component | Technical Responsibility |
 | :--- | :--- | :--- |
-| **`install.c`** | Handles Node.js installation. | Arch detection, integrity verification, and tarball extraction. |
-| **`use.c`** | Manages version switching. | Atomic symlinking, dual-scope (user/global), and `.npmrc` updates. |
-| **`list.c`** | Versions discovery. | Remote fetching via `curl`, local directory scanning, and filtering. |
-| **`remove.c`** | Uninstallation logic. | Privilege validation, path traversal protection, and clean removal. |
-| **`help.c`** | Interface guidance. | Formatted CLI instructions and usage examples. |
+| **`start.c`** | **Lifecycle Init** | Implements directory climbing to detect `.ndmrc` and auto-switch versions. |
+| **`install.c`** | **Acquisition** | SHA256 integrity verification with automated retry logic (up to 3 attempts). |
+| **`use.c`** | **Env Manager** | Atomic symlink manipulation for user and system-wide scopes. |
+| **`list.c`** | **Discovery** | Remote index parsing and local directory scanning via array-based collection. |
+| **`remove.c`** | **Cleanup** | Secure recursive deletion with privilege and path traversal validation. |
 
-## ⚙️ Logic Details
+## Implementation Details (v2.3.0 Updates)
 
-### 📥 Installation (`install.c`)
-- Fetches binaries directly from `https://nodejs.org/dist/`.
-- Validates system architecture (x64, arm64, etc.) before downloading.
-- Requires **Root Privileges** as it writes to the global installation directory.
+### 1. Project-based Auto Switching (`start.c`)
+Introduced in v2.3.0, the `start()` function implements a "directory climbing" algorithm:
+- It searches for an `.ndmrc` file in the current working directory.
+- If not found, it recursively moves up to the parent directory until it reaches the root (`/`).
+- Upon discovery, it parses the version and triggers an automatic `use()` command to sync the environment with the project's requirements.
 
-### 🔄 Switching (`use.c`)
-- **User Mode**: Creates local symlinks in `$HOME/.ndm/bin` and updates the user's `$PATH` configuration.
-- **Global Mode (`--default`)**: Replaces the system-wide source to update the default Node.js version for all users.
+### 2. Robust Installation & Retries (`install.c`)
+The installation module now features an automated recovery flow:
+- **Integrity Check**: Compares local `sha256sum` against official `SHASUMS256.txt`.
+- **Retry Mechanism**: If a checksum mismatch occurs (e.g., due to network corruption), NDM automatically unlinks the corrupted artifacts and retries the download up to 3 times before exiting with an error.
 
-### 🔍 Listing (`list.c`)
-- **Local**: Scans `$HOME/.ndm`.
-- **System**: Scans the global `NODE_INSTALL_DIR`.
-- **Remote**: Uses `curl` and `awk` to parse the official Node.js version table.
+### 3. Atomic Environment Switching (`use.c`)
+Ensures that version transitions are instantaneous:
+- **Symlink Force**: Uses `symlink_force` to swap binary links in `/opt/nodeman` or `$HOME/.ndm/bin`.
+- **Dual Scope**: Independent management of user-specific environments without affecting the global system default unless explicitly requested via `--default`.
 
-### 🗑 Removal (`remove.c`)
-- Performs a safety check to prevent accidental deletion of system directories.
-- Uses a recursive removal process to ensure no leftover artifacts remain.
+### 4. Memory-Safe Discovery (`list.c`)
+Provides programmatic access to version data:
+- **Data Arrays**: Returns `char**` arrays for the TUI module to render.
+- **Resource Discipline**: Every discovery call is paired with `free_versions_array()` to ensure zero memory leaks during long-running TUI sessions.
 
-## 📜 Security Principles
+## Security Principles
 
-* **Privilege Escalation**: Functions that modify global state (install/remove/default use) strictly enforce `getuid() == 0` checks.
-* **Path Sanitization**: All version inputs are checked for `/` to prevent path traversal attacks.
-* **Atomic Operations**: Environment updates (like switching versions) are done via symlink swaps to prevent broken states.
+- **Privilege Validation**: Operations affecting `/opt/nodeman` strictly enforce `getuid() == 0`.
+- **Path Sanitization**: All version inputs are validated to prevent path traversal attacks (checking for `/`).
+- **Process Isolation**: External tools (`tar`, `curl`, `awk`) are executed via secure `fork/execvp` wrappers.
 
 ---
-*Part of the NDM Project - High Performance Node Management*
+*NDM Project - Core Logic Documentation (v2.3.0)*

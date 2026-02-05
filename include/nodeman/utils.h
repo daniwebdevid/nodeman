@@ -30,7 +30,6 @@ typedef enum {
 /* --- Logging Functions --- */
 
 // Prints to stdout if verbose is true
-// Note: Changed to pointer bool *verbose to match your module logic
 void log_info(bool verbose, const char *fmt, ...);
 
 // Prints a warning message to stderr
@@ -44,7 +43,7 @@ void log_error(const char *fmt, ...);
 // Executes a shell command using fork/execvp; returns exit status
 int command(bool *verbose, const char *fmt, ...);
 
-// Executes a command and captures its output string (e.g., for shasum or version)
+// Executes a command and captures its output string
 int command_output(char *out_buf, size_t out_size, bool *verbose, const char *fmt, ...);
 
 // Detects the system architecture (x64, arm64, etc.)
@@ -57,5 +56,8 @@ int file_write(const char *filename, bool append, const char *fmt, ...);
 
 // Forcefully creates a symlink (removes existing if necessary)
 int symlink_force(bool *verbose, const char *target, const char *linkpath);
+
+// Reads the first line of a file into a buffer (New in 2.3.0)
+int open_file(char *buffer, size_t size, const char *path);
 
 #endif // UTILS_H

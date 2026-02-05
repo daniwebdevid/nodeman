@@ -1,0 +1,188 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+  <diagram name="Page-1" id="5t-14d9XsKTZfjoxBC-2">
+    <mxGraphModel dx="1458" dy="882" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-6" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="Start Install" vertex="1">
+          <mxGeometry height="39" width="105" x="473" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Root Required" vertex="1">
+          <mxGeometry height="54" width="236" x="280" y="641" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Invalid Version" vertex="1">
+          <mxGeometry height="54" width="237" x="402" y="901" as="geometry" />
+        </mxCell>
+        <mxCell id="FTBBBBzouVQGUwf0Wa6C-23" edge="1" parent="1" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.95;entryX=0.5;entryY=0.01;rounded=0;" target="FTBBBBzouVQGUwf0Wa6C-8" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="398" y="544" />
+            </Array>
+            <mxPoint x="484.42105263157896" y="465.42105263157896" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-1" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="ndm install version" vertex="1">
+          <mxGeometry height="39" width="157" x="406" y="1090" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-2" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Is Root?" vertex="1">
+          <mxGeometry height="114" width="114" x="428" y="1179" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-3" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Root Required" vertex="1">
+          <mxGeometry height="54" width="236" x="286" y="1428" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-4" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Validation &amp;amp; &#xa; Normalization" vertex="1">
+          <mxGeometry height="176" width="176" x="572" y="1367" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-5" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Already &#xa; Installed?" vertex="1">
+          <mxGeometry height="147" width="147" x="587" y="1592" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-6" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Already Exists" vertex="1">
+          <mxGeometry height="54" width="233" x="437" y="1864" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-7" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Cache &#xa; Complete?" vertex="1">
+          <mxGeometry height="155" width="155" x="720" y="1813" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-8" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Verify Remote &#xa; &amp;amp; Download" vertex="1">
+          <mxGeometry height="178" width="178" x="326" y="2042" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-9" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Not Found" vertex="1">
+          <mxGeometry height="54" width="208" x="280" y="2359" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-10" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Verify SHA256 &#xa; vs SHASUMS" vertex="1">
+          <mxGeometry height="182" width="182" x="538" y="2295" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-11" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Attempt &amp;lt; 3?" vertex="1">
+          <mxGeometry height="145" width="145" x="556" y="2551" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-12" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Unlink Corrupted &#xa; Tarball &amp;amp; SHASUM" vertex="1">
+          <mxGeometry height="78" width="195" x="594" y="2770" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-13" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Checksum Failed" vertex="1">
+          <mxGeometry height="54" width="257" x="839" y="2782" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-14" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="tar -xf &#xa; --strip-components=1" vertex="1">
+          <mxGeometry height="78" width="212" x="1347" y="2584" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-15" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="Install Success" vertex="1">
+          <mxGeometry height="39" width="131" x="1146" y="2790" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-16" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Extraction Failed" vertex="1">
+          <mxGeometry height="54" width="252" x="1327" y="2782" as="geometry" />
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-17" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-1" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-18" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-2" style="curved=1;startArrow=none;endArrow=block;exitX=0.07;exitY=1;entryX=0.5;entryY=-0.01;rounded=0;" target="tow4IP1M_otP6YgKDBSF-3" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="404" y="1330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-19" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-2" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.77;entryX=0.5;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-4" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="1330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-20" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-4" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-5" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-21" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-5" style="curved=1;startArrow=none;endArrow=block;exitX=0.02;exitY=1;entryX=0.5;entryY=-0.01;rounded=0;" target="tow4IP1M_otP6YgKDBSF-6" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="554" y="1776" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-22" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-5" style="curved=1;startArrow=none;endArrow=block;exitX=0.99;exitY=0.9;entryX=0.5;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-7" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="798" y="1776" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-23" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-7" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.65;entryX=0.5;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-8" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="416" y="2005" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-24" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-8" style="curved=1;startArrow=none;endArrow=block;exitX=0.38;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-9" value="404">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="384" y="2258" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-25" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-8" style="curved=1;startArrow=none;endArrow=block;exitX=0.99;exitY=1;entryX=0.14;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-10" value="Success">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="538" y="2258" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-26" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-7" style="curved=1;startArrow=none;endArrow=block;exitX=0.23;exitY=1;entryX=0.91;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-10" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="735" y="2005" />
+              <mxPoint x="735" y="2258" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-27" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-10" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-11" value="Mismatch">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-28" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-11" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.34;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-12" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="629" y="2733" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-29" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-12" style="curved=1;startArrow=none;endArrow=block;exitX=0.82;exitY=0;entryX=0.58;entryY=1;rounded=0;" target="tow4IP1M_otP6YgKDBSF-7" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="814" y="2733" />
+              <mxPoint x="814" y="2005" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-30" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-11" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.66;entryX=0.5;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-13" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="968" y="2733" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-31" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-10" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.58;entryX=0.5;entryY=0.01;rounded=0;" target="tow4IP1M_otP6YgKDBSF-14" value="Match">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1453" y="2514" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-32" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-14" style="curved=1;startArrow=none;endArrow=block;exitX=0.1;exitY=1.01;entryX=0.5;entryY=-0.01;rounded=0;" target="tow4IP1M_otP6YgKDBSF-15" value="Success">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1212" y="2733" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tow4IP1M_otP6YgKDBSF-33" edge="1" parent="1" source="tow4IP1M_otP6YgKDBSF-14" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.5;entryY=0;rounded=0;" target="tow4IP1M_otP6YgKDBSF-16" value="Fail">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

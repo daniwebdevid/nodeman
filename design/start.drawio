@@ -1,0 +1,85 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+  <diagram name="Page-1" id="lEImAOW3yYXIxEBYyfHp">
+    <mxGraphModel dx="1458" dy="882" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-1" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="ndm start" vertex="1">
+          <mxGeometry height="39" width="91" x="104" y="81" as="geometry" />
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-2" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Get Current Working Directory" vertex="1">
+          <mxGeometry height="78" width="260" x="20" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-3" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Found .ndmrc?" vertex="1">
+          <mxGeometry height="162" width="162" x="554" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-4" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Climbing: Move to Parent Directory" vertex="1">
+          <mxGeometry height="78" width="260" x="330" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-5" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Is Root reached?" vertex="1">
+          <mxGeometry height="176" width="176" x="460" y="384" as="geometry" />
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-6" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: No .ndmrc found" vertex="1">
+          <mxGeometry height="54" width="251" x="422" y="633" as="geometry" />
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-7" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="open_file: Read Version from .ndmrc" vertex="1">
+          <mxGeometry height="78" width="260" x="726" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Execute: use version_buffer" vertex="1">
+          <mxGeometry height="54" width="258" x="727" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-9" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="Environment Updated" vertex="1">
+          <mxGeometry height="39" width="179" x="767" y="641" as="geometry" />
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-10" edge="1" parent="1" source="bVGlfjuIG3K0mWWaJZTP-1" style="curved=1;startArrow=none;endArrow=block;exitX=0.51;exitY=1.01;entryX=0.5;entryY=-0.01;rounded=0;" target="bVGlfjuIG3K0mWWaJZTP-2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-11" edge="1" parent="1" source="bVGlfjuIG3K0mWWaJZTP-3" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.83;entryX=0.5;entryY=-0.01;rounded=0;" target="bVGlfjuIG3K0mWWaJZTP-4" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="219" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-12" edge="1" parent="1" source="bVGlfjuIG3K0mWWaJZTP-4" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=0.99;entryX=0.11;entryY=0;rounded=0;" target="bVGlfjuIG3K0mWWaJZTP-5" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="359" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-13" edge="1" parent="1" source="bVGlfjuIG3K0mWWaJZTP-5" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0.01;rounded=0;" target="bVGlfjuIG3K0mWWaJZTP-6" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-14" edge="1" parent="1" source="bVGlfjuIG3K0mWWaJZTP-5" style="curved=1;startArrow=none;endArrow=block;exitX=0.89;exitY=0;entryX=0.5;entryY=1;rounded=0;" target="bVGlfjuIG3K0mWWaJZTP-3" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="635" y="359" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-15" edge="1" parent="1" source="bVGlfjuIG3K0mWWaJZTP-3" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.76;entryX=0.5;entryY=-0.01;rounded=0;" target="bVGlfjuIG3K0mWWaJZTP-7" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="856" y="219" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-16" edge="1" parent="1" source="bVGlfjuIG3K0mWWaJZTP-7" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=0.99;entryX=0.5;entryY=-0.01;rounded=0;" target="bVGlfjuIG3K0mWWaJZTP-8" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bVGlfjuIG3K0mWWaJZTP-17" edge="1" parent="1" source="bVGlfjuIG3K0mWWaJZTP-8" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=0.99;entryX=0.5;entryY=0;rounded=0;" target="bVGlfjuIG3K0mWWaJZTP-9" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
