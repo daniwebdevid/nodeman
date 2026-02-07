@@ -17,7 +17,7 @@ NDM is a high-performance, lightweight Node.js version manager written in C11. I
 ### 1. Quick Install (Binary)
 Requires `curl`, `tar`, `xz`, and `jq`.
 ```bash
-curl -fsSL [https://github.com/daniwebdevid/nodeman/releases/download/v2.5.0/install.sh](https://github.com/daniwebdevid/nodeman/releases/download/v2.5.0/install.sh) | sudo bash
+curl -fsSL https://github.com/daniwebdevid/nodeman/releases/download/v2.5.0/install.sh | sudo bash
 
 ```
 
@@ -26,7 +26,7 @@ curl -fsSL [https://github.com/daniwebdevid/nodeman/releases/download/v2.5.0/ins
 Ensure `gcc`, `cmake`, `libncurses-dev`, and `libcurl` are installed.
 
 ```bash
-git clone [https://github.com/daniwebdevid/nodeman.git](https://github.com/daniwebdevid/nodeman.git)
+git clone https://github.com/daniwebdevid/nodeman.git
 cd nodeman && mkdir build && cd build
 cmake .. && make
 sudo make install
