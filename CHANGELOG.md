@@ -2,7 +2,7 @@
 
 All notable changes to the **NDM (Node Manager)** project will be documented in this file.
 
-## [2.5.0] - 2026-02-10
+## [2.5.0] - 2026-02-7
 
 ### Added
 * **Asynchronous Remote Discovery**: Implemented `pthread` integration for remote version fetching to prevent UI blocking during network latency.
