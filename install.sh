@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION="2.4.0"
+VERSION="2.5.0"
 TAR_NAME="nodeman-${VERSION}-linux.tar.xz"
 EXTRACTED_DIR="nodeman-${VERSION}-linux"
 INSTALL_PATH="/opt/nodeman"

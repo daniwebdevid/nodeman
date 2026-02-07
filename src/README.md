@@ -1,8 +1,8 @@
 # NDM Source Core
 
-This directory contains the entry point and high-level orchestrators for NDM. In version 2.4.0, the source architecture is optimized for diagnostic health, cache management, and seamless transition between TUI and CLI modes.
+This directory contains the entry point and high-level orchestrators for NDM. In version 2.5.0, the source architecture is optimized for diagnostic health, cache management, and seamless transition between TUI and CLI modes.
 
-## Application Lifecycle (v2.4.0)
+## Application Lifecycle (v2.5.0)
 
 The execution flow in `main.c` follows a strict dispatching hierarchy:
 
@@ -22,10 +22,10 @@ The execution flow in `main.c` follows a strict dispatching hierarchy:
 | **`tui/`** | Visual Interface | Ncurses state machine for interactive version control. |
 | **`utils/`** | System Abstraction | POSIX wrappers for file I/O, process execution, and symlinks. |
 
-## Key Implementation Details (v2.4.0)
+## Key Implementation Details (v2.5.0)
 
 ### Maintenance and Diagnostics
-Version 2.4.0 introduces two critical maintenance commands dispatched from `main.c`:
+Version 2.5.0 introduces two critical maintenance commands dispatched from `main.c`:
 - **`ndm doctor`**: Triggers environment health checks, including $PATH integrity and symlink validation.
 - **`ndm prune`**: Safely purges the system cache in `/var/cache/nodeman` to reclaim disk space.
 
@@ -45,4 +45,4 @@ The dispatcher in `main.c` has been refined for better CLI/TUI parity:
 3. **Zero-Overhead Dispatch**: Command matching is performed using optimized string comparisons to ensure near-instantaneous startup.
 
 ---
-*NDM Project - Source Architecture Documentation (v2.4.0)*
+*NDM Project - Source Architecture Documentation (v2.5.0)*

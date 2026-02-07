@@ -1,44 +1,31 @@
-# NDM Core Module (v2.4.0)
+# NDM Core Module (v2.5.0)
 
-This directory contains the primary business logic and system management modules for NDM. The v2.4.0 update introduces diagnostic tools and cache optimization for production environments.
+This directory contains the primary logic for NDM. Version 2.5.0 introduces automated self-updates and comprehensive system auditing.
 
 ## Module Overview
 
 | File | Component | Technical Responsibility |
 | :--- | :--- | :--- |
-| **`start.c`** | **Lifecycle Init** | Implements directory climbing to detect `.ndmrc` and auto-switch versions. |
-| **`doctor.c`** | **Diagnostics** | **New in v2.4.0**. Validates $PATH integrity, active symlinks, and environment health. |
-| **`prune.c`** | **Cache Manager** | **New in v2.4.0**. Purges downloaded tarballs from `/var/cache/nodeman` to reclaim disk space. |
-| **`use.c`** | **Env Manager** | Handles atomic version switching with new shell session support (`--session`). |
-| **`install.c`** | **Acquisition** | SHA256 verification with automated 3-attempt retry logic. |
-| **`list.c`** | **Discovery** | Remote index parsing and local directory scanning via array-based collection. |
+| **`update.c`** | **Self-Updater** | **New in v2.5.0**. Fetches latest releases from GitHub and executes automated installer. |
+| **`status.c`** | **Resource Audit** | **New in v2.5.0**. Calculates disk usage for `/opt/nodeman` and cache size. |
+| **`start.c`** | **Lifecycle Init** | Refined in v2.5.0 with strict buffer validation for `.ndmrc`. |
+| **`doctor.c`** | **Diagnostics** | Validates $PATH integrity and symlink health. |
 
-## Implementation Details (v2.4.0 Updates)
+## Implementation Details (v2.5.0 Updates)
 
-### 1. Environment Diagnostics (`doctor.c`)
-The `doctor` module performs a comprehensive health check of the NDM environment:
-- **Path Validation**: Scans `$PATH` for duplicate or missing NDM binary entries.
-- **Link Integrity**: Verifies that active symlinks in `~/.ndm/bin` are pointing to valid installations.
-- **State Check**: Validates the consistency of the `active` version file in the user's home directory.
+### 1. Self-Update Engine (`update.c`)
+The `update` command automates the NDM lifecycle:
+- **GitHub Integration**: Fetches release metadata using `curl` and parses tags via `jq`.
+- **Atomic Execution**: Downloads and executes the official `install.sh` if a newer version is detected.
+- **Safety**: Registered `atexit` cleanup to purge temporary workspace in `/tmp/nodeman`.
 
-### 2. Cache Optimization (`prune.c`)
-Designed for long-term server maintenance:
-- **Storage Recovery**: Safely unlinks all cached `.tar.xz` and `.txt` files from the system cache directory.
-- **Privilege Enforcement**: Requires root access to ensure `/var/cache/nodeman` is managed securely.
+### 2. Storage & Health Audit (`status.c`)
+Provides a snapshot of the NDM footprint:
+- **Recursive Sizing**: Implements `get_dir_size` using `lstat` to calculate actual disk usage without following symlinks.
+- **Threshold Warnings**: Warns the user if the cache exceeds 1GB, suggesting an `ndm prune`.
 
-### 3. Advanced Version Switching (`use.c`)
-Updated to support transient environments:
-- **Shell Session Mode**: Using the `--session` or `-s` flag, NDM outputs an `export PATH` string that can be evaluated directly by the shell, bypassing permanent symlink changes.
-- **Atomic Overwrites**: Continues to utilize `symlink_force` for stable, race-condition-free version transitions.
-
-### 4. Robust Directory Climbing (`start.c`)
-Refined "climbing" logic using the new `open_file` utility to efficiently parse project-level `.ndmrc` configurations from current directory up to root.
-
-## Security & Engineering Standards
-
-- **Standardization**: All modules return `NdmError` compatible integers for consistent exit codes.
-- **Privilege Scoping**: Functions affecting system-wide paths (`prune`, `install`, `use --default`) strictly validate root ownership.
-- **Memory Discipline**: All discovery operations are paired with deallocation procedures to prevent leaks during TUI sessions.
+### 3. Hardened Climbing Logic (`start.c`)
+- **Buffer Safety**: Added `memset` and explicit length checks for `.ndmrc` content to prevent garbage data injection into the `use` flow.
 
 ---
-*NDM Project - Core Logic Documentation (v2.4.0)*
+*NDM Project - Core Logic Documentation (v2.5.0)*

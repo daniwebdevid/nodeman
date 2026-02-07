@@ -8,7 +8,7 @@
 #include "nodeman/tui.h"
 
 /**
- * Main entry point for ndm (Node Manager).
+ * Main entry point for ndm (Node Manager) v2.5.0.
  * Handles command dispatching and global flag parsing.
  */
 int main(int argc, char *argv[]) {
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
         return remove_node_js(&verbose, argc - 2, argv + 2);
     } 
     
-    // --- MAINTENANCE (Start, Doctor, Prune) ---
+    // --- MAINTENANCE & SYSTEM ---
     else if(strcmp(argv[1], "start") == 0) {
         return start(&verbose);
     }
@@ -77,10 +77,16 @@ int main(int argc, char *argv[]) {
     else if(strcmp(argv[1], "prune") == 0) {
         return prune_cache();
     }
+    else if(strcmp(argv[1], "status") == 0) {
+        return status(&verbose);
+    }
+    else if(strcmp(argv[1], "update") == 0) {
+        return update(&verbose);
+    }
     
     // --- UTILS (Version & Help) ---
     else if(strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
-        printf("2.4.0\n");
+        printf("%s\n", NDM_VERSION);
         return 0;
     } 
     else if(strcmp(argv[1], "help") == 0 || strcmp(argv[1], "-h") == 0) {

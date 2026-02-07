@@ -1,33 +1,31 @@
-# NDM (Node Manager) v2.4.0
+# NDM (Node Manager) v2.5.0
 
-NDM is a high-performance, lightweight Node.js version manager written in C11. It is engineered for Linux environments that require a native, zero-overhead alternative to shell-based managers.
+NDM is a high-performance, lightweight Node.js version manager written in C11. It is engineered for Linux environments that require a native, zero-overhead alternative to shell-based managers. By utilizing POSIX system calls and direct binary execution, NDM eliminates the latency and dependency overhead inherent in traditional shell-script wrappers.
 
-## Key Features
+## Technical Capabilities
 
-- **Smart Entry Dispatcher**: Automatically launches the interactive TUI if no arguments are provided.
-- **On-Demand Project Sync**: Use `ndm start` to recursively detect `.ndmrc` files and synchronize the environment.
-- **Environment Diagnostics**: The `doctor` command validates $PATH integrity, active symlinks, and environment health.
-- **Storage Optimization**: The `prune` command safely purges the system cache in `/var/cache/nodeman`.
-- **Production-Grade Integrity**: Mandatory SHA256 verification with a 3-attempt retry logic for corrupted streams.
-- **Zero Runtime Overhead**: A compiled native binary that eliminates the latency of shell-script wrappers.
+* **Automated Lifecycle Management**: Implements a "directory climbing" algorithm that recursively scans from the current working directory to the system root for `.ndmrc` files, ensuring environment-to-project parity.
+* **Self-Update Engine**: Integrated GitHub API consumer that automates the update lifecycle. It handles metadata parsing via `jq` and performs atomic binary replacement through the official installer.
+* **Resource Auditing**: Provides a granular report of the NDM footprint. It uses `lstat` for recursive disk usage calculation to ensure symlinks do not skew storage metrics.
+* **Production-Grade Integrity**: Every installation undergoes mandatory SHA256 checksum verification. The engine includes an automated 3-attempt retry mechanism for recovering from corrupted network streams.
+* **Smart Entry Logic**: The binary acts as a dual-mode interface. It dispatches to an Ncurses TUI if no arguments are provided, or routes to the CLI logic layer when specific commands are invoked.
 
 ## Installation
 
-### 1. Quick Install (Binary Release)
-The easiest way to install NDM on Linux. This script handles binary extraction, directory setup, and environment configuration.
+### 1. Binary Deployment (Recommended)
+
+The installation script manages directory preparation, binary extraction, and environment persistence.
 
 ```bash
-curl -fsSL https://github.com/daniwebdevid/nodeman/releases/download/v2.4.0/install.sh | sudo bash
+curl -fsSL https://github.com/daniwebdevid/nodeman/releases/download/v2.5.0/install.sh | sudo bash
 
 ```
 
-### 2. Build from Source
+### 2. Manual Build
 
-Ensure you have `gcc`, `cmake`, `libncurses-dev`, `libcurl`, and `xz-utils` installed.
+Requires `gcc`, `cmake`, `libncurses-dev`, `libcurl`, and `xz-utils`.
 
-Bash
-
-```
+```bash
 git clone https://github.com/daniwebdevid/nodeman.git
 cd nodeman && mkdir build && cd build
 cmake .. && make
@@ -35,57 +33,31 @@ sudo make install
 
 ```
 
-## Usage
+## Command Reference
 
-**Command**
+| Command | Argument | Functional Description |
+| --- | --- | --- |
+| **`ndm`** | - | **Launches the Interactive Ncurses TUI.** |
+| `ndm update` | - | Fetches latest release metadata and executes self-update logic. |
+| `ndm status` | - | Reports active version, installation footprint, and cache size. |
+| `ndm doctor` | - | Validates $PATH integrity and verifies symlink health. |
+| `ndm start` | - | Triggers manual `.ndmrc` discovery and synchronization. |
+| `ndm prune` | - | Purges `/var/cache/nodeman` to reclaim system storage. |
+| `ndm install` | `<version>` | Performs acquisition with SHA256 verification. |
+| `ndm use` | `<version>` | Switches version (supports `-s` for session-only scope). |
 
-**Action**
+## Engineering Standards
 
-**`ndm`**
-
-**Launches the Interactive TUI (Default behavior).**
-
-`ndm start`
-
-Triggers `.ndmrc` discovery (climbing to root) and switches version.
-
-`ndm doctor`
-
-Performs environment health checks and path diagnostics.
-
-`ndm prune`
-
-Clears downloaded tarballs from the system cache (Requires Sudo).
-
-`ndm install <v>`
-
-Installs a specific version with integrity verification.
-
-`ndm use <v> -s`
-
-Switches version or outputs shell-eval string for sessions.
-
-`ndm list`
-
-Displays local and system installations.
-
-## Technical Implementation
-
--   **Standard**: C11 / POSIX compliant.
-    
--   **Environment Persistence**: Managed via `/etc/security/pam_env.conf` and `/etc/profile.d/` for robust path inheritance.
-    
--   **Memory Safety**: Strictly enforced deallocation for discovery arrays.
-    
--   **Security**: Root privilege validation for all system-level operations (`/opt/nodeman`).
-    
+* **Standardization**: C11 / POSIX compliant for maximum portability across Linux distributions.
+* **Environment Persistence**: Unlike shell-based managers, NDM manages pathing via `/etc/security/pam_env.conf` and `/etc/profile.d/` for robust inheritance.
+* **Memory Discipline**: Strictly enforced deallocation for discovery arrays and recursive data structures to prevent leaks during long-running TUI sessions.
+* **Security Architecture**: Enforces root privilege validation for all system-level modifications (`/opt/nodeman`) and implements path traversal protection on all version inputs.
 
 ## License
 
 Licensed under the GNU General Public License v3.
 
-----------
+---
 
-**Developed by Dany Saputra** | _High-Performance Node Management for Linux_
-
+**Developed by Dany Saputra** | *Native Node.js Version Management for Linux*
 
