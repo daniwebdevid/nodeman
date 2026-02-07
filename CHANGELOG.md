@@ -8,7 +8,7 @@ All notable changes to the **NDM (Node Manager)** project will be documented in 
 * **Command: doctor**: Deep environment diagnostic tool to verify PATH integrity and active symlink health.
 * **Command: prune**: Automated cache maintenance for `/var/cache/nodeman`.
 * **Command: start**: Recursive directory climbing for project-level `.ndmrc` discovery.
-* **Shell Integration**: Official support for Zsh and Fish shell environment configurations.
+* **Shell Integration**: Official support shell environment configurations.
 * **Atomic Symlinking**: Introduced `symlink_force` utility to ensure instantaneous version swaps.
 
 ### Changed
