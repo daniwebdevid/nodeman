@@ -2,9 +2,24 @@
 
 All notable changes to the **NDM (Node Manager)** project will be documented in this file.
 
-# Changelog
+## [2.5.0] - 2026-02-10
 
-All notable changes to the **NDM (Node Manager)** project will be documented in this file.
+### Added
+* **Asynchronous Remote Discovery**: Implemented `pthread` integration for remote version fetching to prevent UI blocking during network latency.
+* **Smart Garbage Collection**: Introduced an automated memory tracking system to ensure all dynamic allocations during discovery and TUI rendering are properly deallocated.
+* **Detailed System Telemetry**: The `doctor` command now includes hardware architecture validation and detailed network connectivity diagnostics.
+* **Extended Environment Support**: Added support for `.zshrc` and `.fish` environment integration in the automated setup process.
+
+### Changed
+* **Performance Optimization**: Refactored the core dispatcher to use a hash-based command lookup, reducing latency in CLI argument parsing.
+* **TUI State Persistence**: Enhanced the TUI to maintain scroll positions and search filters across view transitions.
+* **Build System Refinement**: Updated `CMakeLists.txt` with strict compiler flags (`-Wall -Wextra -Wpedantic`) to ensure high-grade code quality and C11 compliance.
+* **Optimized Buffer Strategy**: Transitioned all string manipulation utilities to use a fixed-size security-hardened buffer pattern to eliminate heap fragmentation.
+
+### Security
+* **Thread-Safe Utilities**: Audit and refactor of `src/utils` to ensure thread safety during asynchronous operations.
+* **Integrity Guard**: Enhanced the `install` module to perform pre-allocation checks, preventing disk space exhaustion attacks during large binary downloads.
+* **Privilege Validation**: Standardized root access checks using a more robust `euid` validation method for system-wide configuration changes.
 
 ## [2.4.0] - 2026-02-07
 

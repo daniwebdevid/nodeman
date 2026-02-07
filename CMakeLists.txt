@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # setting the project name, version, and language
-project(nodeman VERSION 2.4.0 LANGUAGES C)
+project(nodeman VERSION 2.5.0 LANGUAGES C)
 
 # Export compile commands for IDEs (e.g. VS Code) and tooling
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -25,6 +25,8 @@ add_executable(ndm
     src/core/start.c
     src/core/doctor.c
     src/core/prune.c
+    src/core/update.c
+    src/core/status.c
 
     src/utils/arch.c
     src/utils/command.c

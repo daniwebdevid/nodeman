@@ -7,50 +7,55 @@
 #include "nodeman/core.h"
 #include "nodeman/utils.h"
 
+/**
+ * Initializes environment v2.5.0
+ * Added: Strict buffer validation and improved root-level escape.
+ */
 int start(bool *verbose) {
     char current_dir[PATH_MAX];
     char config_path[PATH_MAX];
     char version_buffer[64];
 
-    // 1. Ambil folder aktif (tempat user ketik command)
+    // 1. Context Acquisition
     if (getcwd(current_dir, sizeof(current_dir)) == NULL) {
-        log_error("Gagal dapet current directory");
+        log_error("CRITICAL: Unable to determine current working directory");
         return 1;
     }
 
+    // 2. Directory Tree Traversal
     while (1) {
-        // 2. Target file: path/sekarang/.ndmrc
         snprintf(config_path, sizeof(config_path), "%s/.ndmrc", current_dir);
 
-        // 3. Cek fisik filenya
         if (access(config_path, F_OK) == 0) {
-            log_info(true, "Found config: %s", config_path);
+            log_info(*verbose, "Auto-config found: %s", config_path);
             
-            // 4. Pake fungsi lu buat ambil versinya
+            memset(version_buffer, 0, sizeof(version_buffer));
             if (open_file(version_buffer, sizeof(version_buffer), config_path)) {
                 
-                // 5. install() butuh char* argv[], kita buat array lokal
-                char *args[] = { version_buffer, NULL }; 
-                return use(verbose, 1, args);
+                // 3. Integrity Check
+                if (strlen(version_buffer) == 0) {
+                    log_warn("Empty .ndmrc detected at %s. Skipping...", current_dir);
+                } else {
+                    char *args[] = { version_buffer, NULL }; 
+                    return use(verbose, 1, args);
+                }
             }
         }
 
-        // 6. Logika Climbing (Naik ke parent)
+        // 4. Upward Navigation
         char *last_slash = strrchr(current_dir, '/');
         
-        // Kalau gak ada slash lagi atau sudah di root
         if (last_slash == NULL || strlen(current_dir) <= 1) {
             break;
         }
 
-        // Berhenti di root "/"
         if (last_slash == current_dir) {
             current_dir[1] = '\0'; 
         } else {
-            *last_slash = '\0'; // Potong folder terakhir
+            *last_slash = '\0';
         }
     }
 
-    log_error("No .ndmrc found in this directory tree.");
+    log_info(*verbose, "Lifecycle: No project-specific .ndmrc found.");
     return 1;
 }

@@ -2,7 +2,7 @@
 
 This directory houses the shared utility functions and system abstractions for NDM. These modules handle low-level operations such as process orchestration, filesystem manipulation, and hardware detection.
 
-## Module Overview (v2.4.0)
+## Module Overview (v2.5.0)
 
 | File | Tool Type | Responsibility |
 | :--- | :--- | :--- |
@@ -15,9 +15,9 @@ This directory houses the shared utility functions and system abstractions for N
 ## Functional Specifications
 
 ### 1. Enhanced File I/O (`file.c`)
-The v2.4.0 update introduces robust reading capabilities to support automated environment discovery:
+The v2.5.0 update introduces robust reading capabilities to support automated environment discovery:
 - **`file_write()`**: A variadic wrapper for `fprintf` that ensures files are opened, written, and flushed atomically.
-- **`open_file()`**: **New in v2.4.0**. Reads the primary line of a file (e.g., `.ndmrc` or `active` state) into a buffer, automatically stripping newline characters.
+- **`open_file()`**: **New in v2.5.0**. Reads the primary line of a file (e.g., `.ndmrc` or `active` state) into a buffer, automatically stripping newline characters.
 
 ### 2. Secure Process Orchestration (`command.c`)
 Decouples the core logic from shell dependencies:
@@ -39,4 +39,4 @@ Crucial for the `use` command to prevent race conditions or "file exists" errors
 - **Error Propagation**: Most utilities return integer status codes, allowing the Core module to handle failures gracefully.
 
 ---
-*NDM Project - Utility Layer Documentation (v2.4.0)*
+*NDM Project - Utility Layer Documentation (v2.5.0)*

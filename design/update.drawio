@@ -1,0 +1,155 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+  <diagram name="Page-1" id="edAjdft5Z--mrdnvIdPN">
+    <mxGraphModel dx="1458" dy="882" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-45" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Child Process (The Updater)" vertex="1">
+          <mxGeometry height="617" width="420" x="20" y="1382" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-46" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Parent Process" vertex="1">
+          <mxGeometry height="257" width="217" x="482" y="1253" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-47" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="ndm update" vertex="1">
+          <mxGeometry height="54" width="145" x="226" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-48" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Check EUID == 0?" vertex="1">
+          <mxGeometry height="187" width="187" x="204" y="324" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-49" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Print: Please run as sudo" vertex="1">
+          <mxGeometry height="54" width="239" x="40" y="585" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-50" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="curl GitHub API /latest" vertex="1">
+          <mxGeometry height="54" width="217" x="329" y="585" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-51" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="Local Version &amp;lt; Remote?" vertex="1">
+          <mxGeometry height="233" width="233" x="320" y="689" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-52" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Print: You are on the latest version" vertex="1">
+          <mxGeometry height="78" width="260" x="153" y="997" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-53" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Download install.sh to /tmp/" vertex="1">
+          <mxGeometry height="54" width="256" x="463" y="1009" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-54" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="chmod 755 /tmp/ndm_install.sh" vertex="1">
+          <mxGeometry height="78" width="260" x="461" y="1125" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-55" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="fork process" vertex="1">
+          <mxGeometry height="54" width="147" x="517" y="1278" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-56" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="exit 0" vertex="1">
+          <mxGeometry height="54" width="98" x="554" y="1419" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-57" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="execl /bin/bash ndm_install.sh" vertex="1">
+          <mxGeometry height="78" width="260" x="55" y="1407" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-58" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Download Tarball" vertex="1">
+          <mxGeometry height="54" width="182" x="94" y="1560" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-59" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Verify Checksum" vertex="1">
+          <mxGeometry height="54" width="180" x="95" y="1712" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-60" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Atomic Swap Binary" vertex="1">
+          <mxGeometry height="54" width="203" x="147" y="1816" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-61" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Cleanup &amp; Finish" vertex="1">
+          <mxGeometry height="54" width="182" x="157" y="1920" as="geometry" />
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-62" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-47" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-48" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-63" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-48" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.97;entryX=0.5;entryY=0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-49" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="159" y="548" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-64" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-48" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.97;entryX=0.5;entryY=0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-50" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="437" y="548" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-65" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-50" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1.01;entryX=0.5;entryY=0;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-51" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-66" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-51" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-52" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="283" y="960" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-67" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-51" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=1;entryX=0.5;entryY=-0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-53" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="591" y="960" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-68" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-53" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=0.99;entryX=0.5;entryY=0;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-54" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-69" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-54" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=-0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-55" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-70" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-55" style="curved=1;startArrow=none;endArrow=block;exitX=0.55;exitY=0.99;entryX=0.5;entryY=-0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-56" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="603" y="1357" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-71" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-55" style="curved=1;startArrow=none;endArrow=block;exitX=0.35;exitY=0.99;entryX=1;entryY=0.2;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-57" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="547" y="1357" />
+              <mxPoint x="547" y="1382" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-72" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-57" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=-0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-58" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-73" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-58" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=0.99;entryX=0.5;entryY=-0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-59" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-74" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-59" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=0.99;entryX=0.34;entryY=-0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-60" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="185" y="1791" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-75" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-60" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=0.99;entryX=0.5;entryY=-0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-61" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pd5-BaP1yKUPha6Ezm9w-76" edge="1" parent="1" source="Pd5-BaP1yKUPha6Ezm9w-56" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=0.99;entryX=0.66;entryY=-0.01;rounded=0;" target="Pd5-BaP1yKUPha6Ezm9w-60" value="Binary is now free to be replaced">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="603" y="1510" />
+              <mxPoint x="311" y="1535" />
+              <mxPoint x="311" y="1791" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
