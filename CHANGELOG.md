@@ -2,7 +2,7 @@
 
 All notable changes to the **NDM (Node Manager)** project will be documented in this file.
 
-## [2.5.0] - 2026-02-10
+## [2.5.0] - 2026-02-7
 
 ### Added
 * **Command: doctor**: Deep environment diagnostic tool to verify PATH integrity and active symlink health.
