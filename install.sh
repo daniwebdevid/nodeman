@@ -1,10 +1,11 @@
 #!/bin/sh
 
-VERSION="2.3.0"
-
+VERSION="2.4.0"
 TAR_NAME="nodeman-${VERSION}-linux.tar.xz"
 EXTRACTED_DIR="nodeman-${VERSION}-linux"
 INSTALL_PATH="/opt/nodeman"
+NEW_PATH="PATH OVERRIDE=/home/danydev/.ndm/bin:\${PATH}"
+FILE="/etc/security/pam_env.conf"
 
 DEPENDENCIES="tar xz curl"
 
@@ -16,16 +17,9 @@ for cmd in $DEPENDENCIES; do
     fi
 done
 
-# 0. Privilege Check
+# 1. Privilege Check
 if [ "$(id -u)" -ne 0 ]; then
     echo "Error: Root privileges (sudo) are required for installation"
-    exit 2
-fi
-
-# 1. System Requirement Check
-echo "Verifying system requirements..."
-if ! command -v systemctl > /dev/null 2>&1; then
-    echo "Error: systemd not found. This version of NDM requires systemd."
     exit 2
 fi
 
@@ -56,10 +50,11 @@ echo "Setting up symbolic links..."
 mkdir -p /etc/profile.d/
 ln -sf "${INSTALL_PATH}/config/profile.d.sh" /etc/profile.d/nodeman.sh
 
-cat << 'EOF' >> /etc/security/pam_env.conf
-NDM_HOME DEFAULT=${HOME}/.ndm
-PATH OVERRIDE=${NDM_HOME}/bin:${PATH}
-EOF
+if grep -q "^PATH OVERRIDE=" "$FILE"; then
+    sudo sed -i "s|^PATH OVERRIDE=.*|$NEW_PATH|" "$FILE"
+else
+    echo "$NEW_PATH" | sudo tee -a "$FILE"
+fi
 
 
 # 6. Install Binary

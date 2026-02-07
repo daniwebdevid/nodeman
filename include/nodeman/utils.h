@@ -57,7 +57,7 @@ int file_write(const char *filename, bool append, const char *fmt, ...);
 // Forcefully creates a symlink (removes existing if necessary)
 int symlink_force(bool *verbose, const char *target, const char *linkpath);
 
-// Reads the first line of a file into a buffer (New in 2.3.0)
+// Reads the first line of a file into a buffer (New in 2.4.0)
 int open_file(char *buffer, size_t size, const char *path);
 
 #endif // UTILS_H

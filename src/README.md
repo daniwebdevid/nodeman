@@ -1,46 +1,48 @@
 # NDM Source Core
 
-This directory contains the entry point and high-level orchestrators for the Node Manager (NDM). As of version 2.3.0, the source architecture focuses on automated environment initialization and multi-interface support.
+This directory contains the entry point and high-level orchestrators for NDM. In version 2.4.0, the source architecture is optimized for diagnostic health, cache management, and seamless transition between TUI and CLI modes.
 
-## Application Lifecycle (v2.3.0)
+## Application Lifecycle (v2.4.0)
 
-The execution flow follows a prioritized sequence to ensure the environment is always synchronized:
+The execution flow in `main.c` follows a strict dispatching hierarchy:
 
-1. **System Initialization (`start`)**: Before parsing any CLI arguments, `main.c` invokes the `start()` logic to perform environment validation and project-based version discovery.
-2. **Flag and Scope Parsing**: The application identifies global flags (e.g., `--verbose`) and determines if the user is requesting an interactive session or a direct command.
-3. **Module Dispatching**: Control is handed off to one of the three primary sub-systems:
-    - **Interactive Layer**: The `tui/` module for visual management.
-    - **Logic Layer**: The `core/` module for standard CLI operations.
-    - **Utility Layer**: The `utils/` module for low-level system tasks.
+1. **Smart Entry Check**: If the application is executed without arguments (`argc < 2`), it immediately launches the **Interactive TUI** mode.
+2. **Global Flag Parsing**: Scans for the `--verbose` flag to propagate logging behavior across all child modules.
+3. **Command Dispatching**: Routes inputs to specialized logic blocks:
+    - **Logic Layer (`core/`)**: Standard operations (install, use, list, remove).
+    - **Maintenance Layer**: New diagnostic and cleanup tools (`doctor`, `prune`).
+    - **UI Layer (`tui/`)**: Ncurses-based visual management.
 
 ## Directory Structure
 
 | Component | Role | Technical Responsibility |
 | :--- | :--- | :--- |
-| **`main.c`** | Entry Point | Handles global state, CLI routing, and lifecycle orchestration. |
-| **`core/`** | Logic Engine | Implements installation, removal, and the new `start` lifecycle. |
-| **`tui/`** | Interactive UI | Provides an ncurses-based interface for version management. |
-| **`utils/`** | System Helpers | Abstractions for file I/O, process forking, and architecture detection. |
+| **`main.c`** | Entry Point | CLI routing, global state management, and TUI triggering. |
+| **`core/`** | Logic Engine | Primary operations including the new `doctor` and `prune` modules. |
+| **`tui/`** | Visual Interface | Ncurses state machine for interactive version control. |
+| **`utils/`** | System Abstraction | POSIX wrappers for file I/O, process execution, and symlinks. |
 
-## Key Implementation Details
+## Key Implementation Details (v2.4.0)
 
-### Automated Lifecycle (`start.c`)
-Unlike previous versions, v2.3.0 introduces a mandatory startup phase. The `start()` function performs "directory climbing" to find `.ndmrc` files, ensuring that your Node.js version automatically matches your project's requirements as soon as you execute NDM.
+### Maintenance and Diagnostics
+Version 2.4.0 introduces two critical maintenance commands dispatched from `main.c`:
+- **`ndm doctor`**: Triggers environment health checks, including $PATH integrity and symlink validation.
+- **`ndm prune`**: Safely purges the system cache in `/var/cache/nodeman` to reclaim disk space.
 
-### Command Dispatching logic
-The dispatcher in `main.c` uses optimized string comparisons to route user inputs:
-- **`ndm tui`**: Suspends standard CLI output to launch the ncurses interactive terminal.
-- **`ndm install/use/remove`**: Routes directly to the core engine with sanitized arguments.
+### Advanced Dispatching Logic
+The dispatcher in `main.c` has been refined for better CLI/TUI parity:
+- **`ndm start`**: Explicitly triggers the directory climbing logic to sync with project-level `.ndmrc` files.
+- **`ndm use`**: Now supports `--session` or `-s` flags for transient shell environments via stdout evaluation.
 
-### Resource and Error Management
-- **Verbosity**: A pointer-based verbose flag is propagated through all modules to control system log output.
-- **Exit Codes**: Implements standardized POSIX exit codes (0 for success, 1 for runtime failures, 2 for privilege or input errors).
+### Resource Discipline
+- **Exit Codes**: Adheres to standardized exit mapping (e.g., `2` for invalid arguments, `1` for runtime errors, `0` for success).
+- **Error Propagation**: Uses `errno` and custom `log_error` wrappers to provide detailed feedback during failed system calls.
 
 ## Engineering Standards
 
-1. **Non-Blocking Initialization**: The `start()` phase is designed to be lightweight, ensuring no perceived lag during standard CLI usage.
-2. **Interface Parity**: Both CLI and TUI modes utilize the exact same core functions to ensure behavioral consistency.
-3. **Memory Safety**: Entry points are responsible for triggering the cleanup of dynamic structures used during the execution phase.
+1. **Interface Flexibility**: Designed to work as both a direct binary for automation (CLI) and a visual tool for developers (TUI).
+2. **Memory Safety**: Entry points ensure that any dynamic data required for version listing is cleared before process termination.
+3. **Zero-Overhead Dispatch**: Command matching is performed using optimized string comparisons to ensure near-instantaneous startup.
 
 ---
-*NDM Project - Source Architecture Documentation (v2.3.0)*
+*NDM Project - Source Architecture Documentation (v2.4.0)*

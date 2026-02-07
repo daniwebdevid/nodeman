@@ -20,7 +20,7 @@ void draw_layout(TuiState *state) {
     int max_display = h - 7; // Ruang list: Total layar minus Header & Footer
 
     draw_ndm_box(w, h);
-    mvprintw(0, (w - 14) / 2, "[ NDM TUI v2.3.0 ]");
+    mvprintw(0, (w - 14) / 2, "[ NDM TUI v2.4.0 ]");
 
     // Render Tab Header
     mvprintw(2, 4, state->current_view == VIEW_LOCAL ? "-> (1) LOCAL " : "   (1) LOCAL ");

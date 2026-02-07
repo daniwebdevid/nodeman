@@ -10,25 +10,42 @@
 
 /**
  * Entry point for switching Node versions.
- * Dispatches to either system-wide (default) or user-specific installation.
+ * Supports: --default (system), --session (temporary), and user scope (default).
  */
 int use(bool *verbose, int argc, char *argv[]) {
     bool default_flags = false;
+    bool session_flags = false;
     char target_version[64];
-    char *version_input = argv[0];
+    char *version_input = NULL;
     
     // 0. Argument Parsing
     for (int i = 0; i < argc; i++) {
-        if (argv[i] && strcmp(argv[i], "--default") == 0) {
+        if (argv[i] == NULL) continue;
+
+        if (strcmp(argv[i], "--default") == 0) {
             default_flags = true;
-            break;
+        } else if (strcmp(argv[i], "--session") == 0 || strcmp(argv[i], "-s") == 0) {
+            session_flags = true;
+        } else if (argv[i][0] != '-') {
+            version_input = argv[i];
         }
     }
 
+    if (version_input == NULL) {
+        log_error("No version specified");
+        return 2;
+    }
+
+    // 0.1 Session Switch Logic (Shell Eval Mode)
+    if (session_flags) {
+        printf("export PATH=\"%s/%s/bin:$PATH\";\n", NODE_INSTALL_DIR, version_input);
+        printf("echo '[ndm] Switched to %s for this session only';\n", version_input);
+        return 0;
+    }
+
     // 1. Input Validation (Security & Path Traversal Check)
-    if (version_input == NULL || strchr(version_input, '/') != NULL) {
-        log_error("Invalid version name: '%s'. Path traversal is not allowed.", 
-                  version_input ? version_input : "NULL");
+    if (strchr(version_input, '/') != NULL) {
+        log_error("Invalid version name: '%s'. Path traversal is not allowed.", version_input);
         errno = EINVAL; 
         return 2;
     }
@@ -58,19 +75,16 @@ int use(bool *verbose, int argc, char *argv[]) {
 
 /**
  * Handles system-wide Node.js version switching.
- * Efficiently uses symlinks instead of copying data.
  */
 int use_default(bool *verbose, char *argv[]) {
     log_info(true, "Initializing global switch to Node.js v%s", argv[0]);
 
-    // 1. Privilege Check
     if (getuid() != 0) {
         log_error("Root privileges required for global configuration");
         errno = EACCES;
         return 2;
     }
 
-    // 2. Installation Existence Check
     char version_path[512];
     snprintf(version_path, sizeof(version_path), "%s/%s", NODE_INSTALL_DIR, argv[0]);
     
@@ -80,7 +94,6 @@ int use_default(bool *verbose, char *argv[]) {
         return 2;
     }
 
-    // 3. Global Symlink Synchronization (Production Grade)
     log_info(*verbose, "Updating global default symlink to v%s", argv[0]);
     
     char default_path[512];
@@ -97,12 +110,10 @@ int use_default(bool *verbose, char *argv[]) {
 
 /**
  * Handles user-specific Node.js version switching.
- * Provides isolation via per-version directory structure in $HOME.
  */
 int use_user(bool *verbose, char *argv[]) {
     char *home = getenv("HOME");
 
-    // 1. Environment Check
     if (!home) {
         log_error("Environment error: $HOME is not set");
         errno = ENOENT;
@@ -115,7 +126,6 @@ int use_user(bool *verbose, char *argv[]) {
         return 2;
     }
 
-    // 2. Source Validation (Using direct path to binary)
     char node_bin[512];
     snprintf(node_bin, sizeof(node_bin), "%s/%s/bin/node", NODE_INSTALL_DIR, argv[0]);
     
@@ -125,7 +135,6 @@ int use_user(bool *verbose, char *argv[]) {
         return 2;
     }
 
-    // 3. User Directory Preparation
     log_info(*verbose, "Preparing isolated environment in %s/.ndm/%s", home, argv[0]);
     char user_version_bin[512];
     snprintf(user_version_bin, sizeof(user_version_bin), "%s/.ndm/%s/bin", home, argv[0]);
@@ -135,7 +144,6 @@ int use_user(bool *verbose, char *argv[]) {
         return 1;
     }
 
-    // 4. Binary Mapping (Direct Link for Performance)
     const char *binaries[] = {"node", "npm", "npx", "corepack"};
     char source_file[512];
     char dest_file[512];
@@ -151,7 +159,6 @@ int use_user(bool *verbose, char *argv[]) {
         }
     }
 
-    // 5. Atomic Active Switch
     log_info(*verbose, "Updating active environment symlink...");
     char active_link[512];
     snprintf(active_link, sizeof(active_link), "%s/.ndm/bin", home);
@@ -161,7 +168,6 @@ int use_user(bool *verbose, char *argv[]) {
         return 1;
     }
 
-    // 6. Config & State Persistence
     char path_buf[1024];
     log_info(*verbose, "Finalizing .npmrc and active state");
 
