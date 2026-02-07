@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
     else if(strcmp(argv[1], "use") == 0) {
         if (argc < 3) {
             log_error("No version selected to use");
-            log_error("Usage: %s use <version> [--default]", argv[0]);
+            log_error("Usage: %s use <version> [--default|--session|-s]", argv[0]);
             errno = EINVAL; 
             return 2; 
         }
@@ -67,14 +67,20 @@ int main(int argc, char *argv[]) {
         return remove_node_js(&verbose, argc - 2, argv + 2);
     } 
     
-    // --- START / INITIALIZATION ---
+    // --- MAINTENANCE (Start, Doctor, Prune) ---
     else if(strcmp(argv[1], "start") == 0) {
         return start(&verbose);
     }
-
+    else if (strcmp(argv[1], "doctor") == 0) {
+        return doctor(&verbose);
+    }
+    else if(strcmp(argv[1], "prune") == 0) {
+        return prune_cache();
+    }
+    
     // --- UTILS (Version & Help) ---
     else if(strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
-        printf("2.3.0\n");
+        printf("2.4.0\n");
         return 0;
     } 
     else if(strcmp(argv[1], "help") == 0 || strcmp(argv[1], "-h") == 0) {
