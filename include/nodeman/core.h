@@ -23,13 +23,14 @@ int start(bool *verbose);
 int doctor(bool *verbose);
 int status(bool *verbose);
 int prune_cache();
-int update(bool *verbose);
+int update(bool *verbose, int argc);
 
 /**
  * Installation Management
  */
-int install(bool *verbose, char *argv[]);
+int install(bool *verbose, char *argv[], int argc);
 int remove_node_js(bool *verbose, int argc, char *argv[]);
+int uninstall(bool *verbose, char *argv[]);
 
 /**
  * Version Switching
@@ -53,5 +54,6 @@ char* get_latest_of_major(int major);
 char** get_remote_versions_array(bool *verbose, char **filters, int filter_count, int *out_count);
 char** get_local_versions_array(const char *path, int *out_count);
 void free_versions_array(char **versions, int count);
+
 
 #endif // CORE_H

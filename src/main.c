@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
             errno = EINVAL; 
             return 2; 
         }
-        return install(&verbose, argv + 2);
+        return install(&verbose, argv + 2, argc);
     } 
     
     // --- USE ---
@@ -81,7 +81,9 @@ int main(int argc, char *argv[]) {
         return status(&verbose);
     }
     else if(strcmp(argv[1], "update") == 0) {
-        return update(&verbose);
+        return update(&verbose, argc-1);
+    } else if(strcmp(argv[1], "uninstall") == 0) {
+        return uninstall(&verbose, argv+1);
     }
     
     // --- UTILS (Version & Help) ---

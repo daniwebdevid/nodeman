@@ -5,6 +5,10 @@
 #include "nodeman/core.h"
 #include "nodeman/utils.h"
 
+/**
+ * Handles keyboard interaction within the TUI.
+ * Manages view switching, navigation, and command execution.
+ */
 void handle_input(TuiState *state) {
     int h, w;
     getmaxyx(stdscr, h, w);
@@ -58,29 +62,23 @@ void handle_input(TuiState *state) {
                 bool v = true;
                 char *args[] = { selected, NULL };
 
-                // Temporarily exit TUI for CLI action
                 def_prog_mode();
                 endwin();
                 
-                // 1. Clear terminal using your engine
                 command(&v, "clear");
 
-                // 2. Execute based on context
                 if (state->current_view == VIEW_REMOTE) {
-                    install(&v, args);
+                    install(&v, args, 1);
                 } else {
                     use(&v, 1, args);
                 }
 
-                // 3. User interaction to return
                 printf("\n\r[Press ENTER to return to NDM]");
                 fflush(stdout);
                 
-                // Cleaner buffer flush
                 int temp_ch;
                 while ((temp_ch = getchar()) != '\n' && temp_ch != EOF);
 
-                // 4. Back to TUI
                 reset_prog_mode();
                 refresh();
             }

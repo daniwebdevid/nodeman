@@ -52,10 +52,17 @@ int update(bool *verbose) {
     // 2. Fetch Remote State
     if (*verbose) log_info(true, "Checking for updates...");
 
+    if(argc > 0) {
+        char link[512];
+        snprintf(link, sizeof(link), "https://api.github.com/repos/daniwebdevid/nodeman/releases/v%s", argv[1]);        
+    } else {
+        char link[512] = "https://api.github.com/repos/daniwebdevid/nodeman/releases/latest";
+    }
     char curl_cmd[512];
     snprintf(curl_cmd, sizeof(curl_cmd), 
-             "curl -s -o %s/latest.json https://api.github.com/repos/daniwebdevid/nodeman/releases/latest", 
-             temp_dir);
+             "curl -s -o %s/latest.json %s", 
+             temp_dir,
+            link);
 
     if (command(verbose, curl_cmd) != 0) {
         log_error("Failed to fetch release metadata");
