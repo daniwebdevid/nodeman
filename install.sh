@@ -1,47 +1,68 @@
 #!/bin/sh
 
-VERSION="2.5.0"
-TAR_NAME="nodeman-${VERSION}-linux.tar.xz"
-EXTRACTED_DIR="nodeman-${VERSION}-linux"
+VERSION="2.6.0"
+
+
+ARCH=$(uname -m)
+case "$ARCH" in
+    x86_64)
+        TAR_ARCH="x86_64"
+        ;;
+    aarch64|arm64)
+        TAR_ARCH="aarch64"
+        ;;
+    *)
+        echo "[ERROR] Architecture $ARCH is not supported."
+        exit 1
+        ;;
+esac
+
+TAR_NAME="nodeman-${VERSION}-linux-${TAR_ARCH}.tar.xz"
+EXTRACT_TMP="ndm_temp_extract"
 INSTALL_PATH="/opt/nodeman"
 FILE="/etc/login.defs"
 
 DEPENDENCIES="tar xz curl"
 
-# Loop versi sh
+# Loop check dependencies
 for cmd in $DEPENDENCIES; do
     if ! command -v "$cmd" > /dev/null 2>&1; then
-        echo "[ERROR] Command $cmd not found. please install $cmd"
+        echo "[ERROR] Command $cmd not found. Please install $cmd"
         exit 1
     fi
 done
 
-# 1. Privilege Check
+# Privilege Check
 if [ "$(id -u)" -ne 0 ]; then
     echo "Error: Root privileges (sudo) are required for installation"
     exit 2
 fi
 
 # 2. Download Tarball
-echo "Downloading NDM v${VERSION}..."
-if ! curl -L -O "https://github.com/daniwebdevid/nodeman/releases/download/v${VERSION}/${TAR_NAME}"; then
-    echo "Error: Failed to download tarball"
+echo "Detected architecture: ${TAR_ARCH}"
+echo "Downloading NDM v${VERSION} for ${TAR_ARCH}..."
+URL="https://github.com/daniwebdevid/nodeman/releases/download/v${VERSION}/${TAR_NAME}"
+
+if ! curl -L -O "$URL"; then
+    echo "Error: Failed to download tarball from $URL"
     exit 1
 fi
 
 # 3. Extraction
 echo "Extracting package..."
+mkdir -p "$EXT_TMP"
 if ! tar -xf "${TAR_NAME}"; then
     echo "Error: Extraction failed"
     exit 1
 fi
 
-# 4. Directory Preparation
+# 4. Directory Preparation (Sesuai struktur folder tarball lu)
 echo "Creating installation directory: ${INSTALL_PATH}"
 mkdir -p "${INSTALL_PATH}"
-if ! cp -rf "${EXTRACTED_DIR}/opt/nodeman/"* "${INSTALL_PATH}/"; then
-    echo "Error: Failed to copy files to ${INSTALL_PATH}"
-    exit 1
+
+# Asumsi di dalam tarball lu ada folder opt/nodeman/
+if [ -d "opt/nodeman" ]; then
+    cp -rf opt/nodeman/* "${INSTALL_PATH}/"
 fi
 
 # 5. Finalizing Symlinks

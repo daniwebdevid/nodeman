@@ -1,31 +1,48 @@
-# NDM Core Module (v2.5.0)
+# NDM Source Core (v2.6.0)
 
-This directory contains the primary logic for NDM. Version 2.5.0 introduces automated self-updates and comprehensive system auditing.
+This directory manages the entry point and routing for the Node Manager. Version 2.6.0 introduces deep system uninstallation and enhanced acquisition logic.
 
-## Module Overview
+## Application Flow
 
-| File | Component | Technical Responsibility |
-| :--- | :--- | :--- |
-| **`update.c`** | **Self-Updater** | **New in v2.5.0**. Fetches latest releases from GitHub and executes automated installer. |
-| **`status.c`** | **Resource Audit** | **New in v2.5.0**. Calculates disk usage for `/opt/nodeman` and cache size. |
-| **`start.c`** | **Lifecycle Init** | Refined in v2.5.0 with strict buffer validation for `.ndmrc`. |
-| **`doctor.c`** | **Diagnostics** | Validates $PATH integrity and symlink health. |
+1. **Smart Entry**: If `argc < 2`, the application immediately launches the **TUI mode** via `main_menu()`.
+2. **Global Flag Parsing**: Scans for `--verbose` to propagate logging state across all modules.
+3. **Dispatching**: Routes CLI commands to their respective core functions with sanitized argument pointers.
 
-## Implementation Details (v2.5.0 Updates)
+## Command Mapping (v2.6.0)
 
-### 1. Self-Update Engine (`update.c`)
-The `update` command automates the NDM lifecycle:
-- **GitHub Integration**: Fetches release metadata using `curl` and parses tags via `jq`.
-- **Atomic Execution**: Downloads and executes the official `install.sh` if a newer version is detected.
-- **Safety**: Registered `atexit` cleanup to purge temporary workspace in `/tmp/nodeman`.
+| Command | Implementation | Technical Scope |
+| --- | --- | --- |
+| `ndm` | `main_menu()` | Ncurses interactive interface. |
+| `ndm install` | `install()` | Acquisition (Binary/Source) with `argc` awareness. |
+| `ndm use` | `use()` | Version switching (Global/User/Session). |
+| `ndm remove` | `remove_node_js()` | Specific version deletion. |
+| `ndm start` | `start()` | Project-based `.ndmrc` synchronization. |
+| `ndm doctor` | `doctor()` | Environment and $PATH health diagnostics. |
+| `ndm prune` | `prune_cache()` | Cache cleanup in `/var/cache/nodeman`. |
+| `ndm status` | `status()` | Resource audit and binary integrity check. |
+| `ndm update` | `update()` | Self-updater via GitHub API (v2.6.0 signature). |
+| `ndm uninstall` | `uninstall()` | **New in v2.6.0**. Full system purge and PAM cleanup. |
 
-### 2. Storage & Health Audit (`status.c`)
-Provides a snapshot of the NDM footprint:
-- **Recursive Sizing**: Implements `get_dir_size` using `lstat` to calculate actual disk usage without following symlinks.
-- **Threshold Warnings**: Warns the user if the cache exceeds 1GB, suggesting an `ndm prune`.
+## Implementation Details
 
-### 3. Hardened Climbing Logic (`start.c`)
-- **Buffer Safety**: Added `memset` and explicit length checks for `.ndmrc` content to prevent garbage data injection into the `use` flow.
+### 1. Command Dispatching Logic
+
+The dispatcher in `main.c` uses optimized string comparisons. Version 2.6.0 update:
+
+* **`install`**: Sekarang mengirimkan `argc` untuk mendukung parsing flag tambahan seperti `--build`.
+* **`update`**: Menggunakan parameter `argc-1` untuk kontrol eksekusi yang lebih presisi.
+* **`uninstall`**: Entry point baru untuk menghapus seluruh footprint NDM dari sistem.
+
+### 2. Resource Discipline
+
+* **Exit Codes**: Mengikuti standar POSIX (`0` success, `1` runtime error, `2` invalid args/privilege).
+* **Error Propagation**: Menggunakan `errno` yang dipadukan dengan `log_error` untuk feedback sistem yang akurat.
+
+### 3. Engineering Standards
+
+* **Zero-Overhead Dispatch**: Startup instan karena tidak ada ketergantungan pada shell scripting di level entry point.
+* **Interface Parity**: CLI dan TUI menggunakan core logic yang sama untuk menjamin konsistensi perilaku sistem.
 
 ---
-*NDM Project - Core Logic Documentation (v2.5.0)*
+
+*NDM Project - Source Architecture Documentation (v2.6.0)*
