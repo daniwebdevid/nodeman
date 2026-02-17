@@ -8,7 +8,7 @@
  * Production-ready paths and versioning.
  */
 #define NODE_INSTALL_DIR "/opt/nodeman"
-#define NDM_VERSION      "2.5.0" 
+#define NDM_VERSION      "2.6.0" 
 
 /**
  * CLI Information & Help
@@ -23,7 +23,7 @@ int start(bool *verbose);
 int doctor(bool *verbose);
 int status(bool *verbose);
 int prune_cache();
-int update(bool *verbose, int argc);
+int update(bool *verbose, int argc, char **argv);
 
 /**
  * Installation Management

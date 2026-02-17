@@ -18,7 +18,7 @@ case "$ARCH" in
 esac
 
 TAR_NAME="nodeman-${VERSION}-linux-${TAR_ARCH}.tar.xz"
-EXTRACT_TMP="ndm_temp_extract"
+EXTRACTED_DIR="nodeman-2.6.0-linux"
 INSTALL_PATH="/opt/nodeman"
 FILE="/etc/login.defs"
 
@@ -50,17 +50,16 @@ fi
 
 # 3. Extraction
 echo "Extracting package..."
-mkdir -p "$EXT_TMP"
 if ! tar -xf "${TAR_NAME}"; then
     echo "Error: Extraction failed"
     exit 1
 fi
 
-# 4. Directory Preparation (Sesuai struktur folder tarball lu)
+# 4. Directory Preparation 
 echo "Creating installation directory: ${INSTALL_PATH}"
 mkdir -p "${INSTALL_PATH}"
 
-# Asumsi di dalam tarball lu ada folder opt/nodeman/
+
 if [ -d "opt/nodeman" ]; then
     cp -rf opt/nodeman/* "${INSTALL_PATH}/"
 fi
