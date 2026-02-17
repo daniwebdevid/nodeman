@@ -1,3 +1,14 @@
-.cache/
+# Build & Output
 build/
-*.idx
+dist/
+pkg/
+bin/
+
+# Package results
+*.pkg.tar.zst
+*.tar.xz
+
+# IDE & OS sampah
+.vscode/
+.DS_Store
+*.swp

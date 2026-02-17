@@ -1,0 +1,31 @@
+post_install() {
+    echo "[NDM] Configuring system PATH via /etc/login.defs..."
+    FILE="/etc/login.defs"
+    
+    # Backup buat jaga-jaga kalau user mau revert manual
+    cp "$FILE" "${FILE}.bak"
+
+    # Handle ENV_PATH (User Biasa)
+    if grep -q "^ENV_PATH" "$FILE"; then
+        sed -i 's|^ENV_PATH.*|ENV_PATH    PATH=/home/%u/.ndm/bin:/usr/local/bin:/usr/bin:/bin|' "$FILE"
+    else
+        echo 'ENV_PATH    PATH=/home/%u/.ndm/bin:/usr/local/bin:/usr/bin:/bin' >> "$FILE"
+    fi
+
+    # Handle ENV_SUPATH (Super User/Root)
+    if grep -q "^ENV_SUPATH" "$FILE"; then
+        sed -i 's|^ENV_SUPATH.*|ENV_SUPATH  PATH=/home/%u/.ndm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin|' "$FILE"
+    else
+        echo 'ENV_SUPATH  PATH=/home/%u/.ndm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' >> "$FILE"
+    fi
+}
+
+post_upgrade() {
+    post_install
+}
+
+post_remove() {
+    echo "[NDM] Warning: /etc/login.defs was modified."
+    echo "[NDM] Original file backup is available at /etc/login.defs.bak"
+    echo "[NDM] Please revert ENV_PATH and ENV_SUPATH manually if you want to restore defaults."
+}

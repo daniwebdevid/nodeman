@@ -1,0 +1,100 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+  <diagram name="Page-1" id="eU_Jaw2gHRK2IPZeUxFx">
+    <mxGraphModel dx="1458" dy="882" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-1" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Deep Cleanup Phase" vertex="1">
+          <mxGeometry height="768" width="330" x="20" y="326" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-2" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="ndm uninstall" vertex="1">
+          <mxGeometry height="39" width="119" x="285" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-3" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="getuid == 0?" vertex="1">
+          <mxGeometry height="143" width="143" x="273" y="109" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-4" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_error: Root Required" vertex="1">
+          <mxGeometry height="54" width="236" x="385" y="363" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-5" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Kill NDM &amp;amp; Node Processes &#xa; via pkill" vertex="1">
+          <mxGeometry height="78" width="259" x="55" y="351" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-6" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Remove .ndm" vertex="1">
+          <mxGeometry height="78" width="260" x="55" y="479" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-7" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Remove /etc/profile.d/nodeman.sh" vertex="1">
+          <mxGeometry height="78" width="260" x="55" y="607" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Cleanup /etc/pam.d/ configurations" vertex="1">
+          <mxGeometry height="78" width="260" x="55" y="735" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-9" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Remove /opt/nodeman &amp; /usr/local/bin/ndm" vertex="1">
+          <mxGeometry height="78" width="260" x="55" y="863" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Remove /var/cache/nodeman" vertex="1">
+          <mxGeometry height="78" width="260" x="55" y="991" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-11" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="log_info: Cleanup Complete" vertex="1">
+          <mxGeometry height="54" width="257" x="56" y="1144" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-12" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;" value="End" vertex="1">
+          <mxGeometry height="39" width="53" x="158" y="1248" as="geometry" />
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-13" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-2" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-3" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-14" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-3" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.84;entryX=0.5;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-4" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="503" y="289" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-15" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-3" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.84;entryX=0.5;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-5" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="185" y="289" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-16" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-5" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-6" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-17" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-6" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-7" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-18" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-7" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-8" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-19" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-8" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-9" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-20" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-9" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-10" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-21" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-10" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-11" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-B_8EVF_pu4ev_YIOQhA-22" edge="1" parent="1" source="-B_8EVF_pu4ev_YIOQhA-11" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.51;entryY=0;rounded=0;" target="-B_8EVF_pu4ev_YIOQhA-12" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

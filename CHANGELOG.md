@@ -2,7 +2,34 @@
 
 All notable changes to the **NDM (Node Manager)** project will be documented in this file.
 
-## [2.5.0] - 2026-02-10
+## [2.6.0] - 2026-02-10
+
+### Added
+
+* **Command: uninstall**: Introduced `src/core/uninstall.c` to provide a dedicated deallocation routine for removing Node.js binaries while preserving global configuration states.
+* **Static Library Integration**: Migrated build system to use architecture-specific static libraries (`libform.a`, `libncurses.a`, `libtinfo.a`) in `libs/${MY_ARCH}` for improved portability across different Linux distributions.
+* **Architecture-Aware Build**: Enhanced `CMakeLists.txt` with `CMAKE_SYSTEM_PROCESSOR` detection to automatically link correct library binaries for `arm64` and `x86_64`.
+* **Threading Support**: Explicitly linked `pthread` and `dl` in the utility layer to support upcoming asynchronous operations and dynamic library loading.
+
+### Changed
+
+* **TUI Input Handler**: Refactored `handle_input` in `src/tui/handler.c` with improved terminal state management (`def_prog_mode`, `endwin`) during command execution.
+* **Installer Logic**: Updated `install()` signature to support extended argument passing for recursive installation routines.
+* **Build System**: Hardened compiler flags and optimized the linker order to prevent unresolved symbol errors during static linking.
+
+### Fixed
+
+* **Terminal State**: Resolved an issue where the terminal would not correctly restore its state when returning from a CLI action (Install/Use) back to the TUI interface.
+* **Linker Order**: Fixed dependency chain in `target_link_libraries` ensuring `libform` is linked before `libncurses`.
+
+### Security
+
+* **Buffer Hardening**: Increased scrutiny on `snprintf` buffer sizes across the TUI layer to prevent truncation during version rendering.
+* **Path Validation**: Reinforced directory existence checks before initiating `uninstall` or `remove` operations to prevent orphan symlinks.
+
+---
+
+## [2.5.0] - 2026-02-7
 
 ### Added
 

@@ -27,6 +27,7 @@ add_executable(ndm
     src/core/prune.c
     src/core/update.c
     src/core/status.c
+    src/core/uninstall.c
 
     src/utils/arch.c
     src/utils/command.c
@@ -46,7 +47,23 @@ target_include_directories(ndm PRIVATE
 )
 
 # linking libraries to the target executable
-target_link_libraries(ndm PRIVATE ${CURSES_LIBRARIES})
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
+    set(MY_ARCH "arm64")
+else()
+    set(MY_ARCH "x86_64")
+endif()
+
+set(LIB_DIR "${CMAKE_SOURCE_DIR}/libs/${MY_ARCH}")
+
+# Link in order (Linker needs order: dependents first then dependencies)
+target_link_libraries(ndm PRIVATE 
+    ${LIB_DIR}/libform.a
+    ${LIB_DIR}/libncurses.a
+    ${LIB_DIR}/libtinfo.a
+    m   # Math library (compiler default)
+    dl  # Dynamic link (compiler default)
+    pthread # Threading (compiler built-in)
+)
 
 # install binary to system
 install(TARGETS ndm DESTINATION bin)

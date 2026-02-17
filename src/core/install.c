@@ -13,14 +13,24 @@
 
 /**
  * Installs a specific Node.js version with integrity check.
- * Adheres to the production-grade caching and extraction structure.
+ * Adheres to the production-grade caching and extraction structure and build choice
  */
-int install(bool *verbose, char *argv[]) {
-    char tarball_path[512], shasum_path[512], install_path[512];
+int install(bool *verbose, char *argv[], int argc) {
+    char tarball_path[512], shasum_path[512], install_path[512], tarball_name[1024];
     char target_version[64]; 
     char *version_input = argv[0];
+    bool build_flags;
+    char tmp[19] = "/tmp/nodeman";
 
     log_info(true, "Initializing installation for Node.js version: %s", version_input);
+
+    for (int i = 0; i < argc; i++) {
+        if (argv[i] == NULL) continue;
+
+        if (strcmp(argv[i], "--build") == 0) {
+            build_flags = true;
+        }
+    }
 
     // 0. Privilege Check
     if(getuid() != 0) {
@@ -48,6 +58,12 @@ int install(bool *verbose, char *argv[]) {
         }
     } else {
         strncpy(target_version, version_input, sizeof(target_version) - 1);
+    }
+
+    if(build_flags == true) {
+        snprintf(tarball_name, sizeof(tarball_name), "node-v%s.tar.xz", target_version);
+    } else {
+        snprintf(tarball_name, sizeof(tarball_name), "node-v%s-linux-%s.tar.xz", target_version, get_arch());
     }
 
     snprintf(tarball_path, sizeof(tarball_path), "%s/node-v%s.tar.xz", CACHE, target_version);
@@ -87,8 +103,8 @@ int install(bool *verbose, char *argv[]) {
         if (!has_tarball) {
             log_info(*verbose, "Downloading Node.js tarball...");
             const char* arch = get_arch();
-            if (command(verbose, "curl -continue-at -o %s https://nodejs.org/dist/v%s/node-v%s-linux-%s.tar.xz", 
-                tarball_path, target_version, target_version, arch) != 0) {
+            if (command(verbose, "curl -continue-at -o %s https://nodejs.org/dist/v%s/%s", 
+                tarball_path, target_version, tarball_name) != 0) {
                 log_error("Failed to download tarball");
                 return 1;
             }
@@ -111,7 +127,7 @@ int install(bool *verbose, char *argv[]) {
     const char* arch = get_arch();
 
     command_output(expected_sha, sizeof(expected_sha), verbose, 
-                   "awk '/linux-%s.tar.xz/ {print $1}' %s", arch, shasum_path);
+                   "awk '/%s/ {print $1}' %s", tarball_name, shasum_path);
     command_output(actual_sha_line, sizeof(actual_sha_line), verbose, 
                    "sha256sum %s", tarball_path);
 
@@ -136,14 +152,53 @@ int install(bool *verbose, char *argv[]) {
         }
     }
 
-    // 6. Extraction & Finalization
-    log_info(*verbose, "Extracting Node.js binary to %s...", install_path);
-    command(verbose, "mkdir -p %s", install_path);
-    
-    if(command(verbose, "tar -xf %s -C %s --strip-components=1", tarball_path, install_path) != 0) {
-        log_error("Extraction failed: The downloaded file might be corrupted");
-        errno = EIO;
-        return 1;
+    if(build_flags == true) {
+        char *cflags = getenv("CFLAGS");
+        char *cxxflags = getenv("CXXFLAGS");
+        char *ldflags = getenv("LDFLAGS");
+
+        if(!mkdir(tmp, 0777)) {
+            log_error("mkdir");
+        }
+
+        log_info(*verbose, "Extracting Node.js binary to %s...", tmp);
+        
+        
+        if(command(verbose, "tar -xf %s -C %s --strip-components=1", tarball_path, tmp) != 0) {
+            log_error("Extraction failed: The downloaded file might be corrupted");
+            errno = EIO;
+            return 1;
+        }
+
+        if(command(verbose, "%s/configure", tmp) != 0) {
+            log_error("configure failed: maybe something is not installed yet");
+            errno = EIO;
+            return 1;
+        }
+
+        long cores = sysconf(_SC_NPROCESSORS_ONLN);
+
+        if(command(verbose, "make -C %s -j%d", tmp, cores-1) != 0) {
+            log_error("build failed: Tthere are some errors while building");
+            errno = EIO;
+            return 1;
+        }
+
+        if(command(verbose, "make install prefix=%s", install_path) != 0) {
+            log_error("build failed: there were some errors while installing");
+            errno = EIO;
+            return 1;
+        }
+    } else {
+        // 6. Extraction & Finalization
+        log_info(*verbose, "Extracting Node.js binary to %s...", install_path);
+        command(verbose, "mkdir -p %s", install_path);
+        
+        if(command(verbose, "tar -xf %s -C %s --strip-components=1", tarball_path, install_path) != 0) {
+            log_error("Extraction failed: The downloaded file might be corrupted");
+            errno = EIO;
+            return 1;
+        }
     }
 
     log_info(true, "Successfully installed Node.js v%s", target_version);
