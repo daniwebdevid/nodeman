@@ -1,4 +1,4 @@
-# NDM (Node Manager) v2.5.0
+# NDM (Node Manager) v2.6.0
 
 NDM is a high-performance, lightweight Node.js version manager written in C11. It is engineered for Linux environments that require a native, zero-overhead alternative to shell-based managers. By utilizing POSIX system calls and direct binary execution, NDM eliminates the latency and dependency overhead inherent in traditional shell-script wrappers.
 
@@ -17,7 +17,7 @@ NDM is a high-performance, lightweight Node.js version manager written in C11. I
 The installation script manages directory preparation, binary extraction, and environment persistence.
 
 ```bash
-curl -fsSL https://github.com/daniwebdevid/nodeman/releases/download/v2.5.0/install.sh | sudo bash
+curl -fsSL https://github.com/daniwebdevid/nodeman/releases/download/v2.6.0/install.sh | sudo bash
 
 ```
 
