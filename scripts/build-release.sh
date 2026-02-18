@@ -19,7 +19,7 @@ rm -rf "$DIST_DIR"
 mkdir -p "$STAGING_ROOT"
 
 echo ""
-read -rp "Enter release version (e.g., 2.6.0): " VERSION
+read -rp "Enter release version (e.g., 2.6.1): " VERSION
 [[ -z "$VERSION" ]] && log_err "Version is required."
 
 # --- Helper: Setup Assets ---

@@ -8,7 +8,7 @@
  * Production-ready paths and versioning.
  */
 #define NODE_INSTALL_DIR "/opt/nodeman"
-#define NDM_VERSION      "2.5.0" 
+#define NDM_VERSION      "2.6.1" 
 
 /**
  * CLI Information & Help
@@ -23,7 +23,7 @@ int start(bool *verbose);
 int doctor(bool *verbose);
 int status(bool *verbose);
 int prune_cache();
-int update(bool *verbose, int argc);
+int update(bool *verbose, int argc, char **argv);
 
 /**
  * Installation Management
@@ -50,7 +50,7 @@ int list_remote(bool *verbose, int argc, char *argv[]);
  * Version Data Handling
  * Low-level memory and discovery utilities.
  */
-char* get_latest_of_major(int major);
+ char* get_latest_of_major(int major, bool is_install);
 char** get_remote_versions_array(bool *verbose, char **filters, int filter_count, int *out_count);
 char** get_local_versions_array(const char *path, int *out_count);
 void free_versions_array(char **versions, int count);

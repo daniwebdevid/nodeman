@@ -1,6 +1,6 @@
 # NDM Source Core (v2.6.0)
 
-This directory manages the entry point and routing for the Node Manager. Version 2.6.0 introduces deep system uninstallation and enhanced acquisition logic.
+This directory manages the entry point and routing for the Node Manager. Version  introduces deep system uninstallation and enhanced acquisition logic.
 
 ## Application Flow
 
@@ -27,7 +27,7 @@ This directory manages the entry point and routing for the Node Manager. Version
 
 ### 1. Command Dispatching Logic
 
-The dispatcher in `main.c` uses optimized string comparisons. Version 2.6.0 update:
+The dispatcher in `main.c` uses optimized string comparisons. Version  update:
 
 * **`install`**: Sekarang mengirimkan `argc` untuk mendukung parsing flag tambahan seperti `--build`.
 * **`update`**: Menggunakan parameter `argc-1` untuk kontrol eksekusi yang lebih presisi.

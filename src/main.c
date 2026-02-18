@@ -8,7 +8,7 @@
 #include "nodeman/tui.h"
 
 /**
- * Main entry point for ndm (Node Manager) v2.5.0.
+ * Main entry point for ndm (Node Manager) v2.6.0.
  * Handles command dispatching and global flag parsing.
  */
 int main(int argc, char *argv[]) {
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
         return status(&verbose);
     }
     else if(strcmp(argv[1], "update") == 0) {
-        return update(&verbose, argc-1);
+        return update(&verbose, argc-1, argv);
     } else if(strcmp(argv[1], "uninstall") == 0) {
         return uninstall(&verbose, argv+1);
     }

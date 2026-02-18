@@ -2,7 +2,23 @@
 
 All notable changes to the **NDM (Node Manager)** project will be documented in this file.
 
-## [2.6.0] - 2026-02-10
+## [2.6.1] - 2026-02-18
+
+### Added
+
+* **Security-First Logic Reordering**: Refactored `src/core/use.c` to perform path traversal checks and version normalization *before* any shell evaluation or export.
+* **Enhanced Version Normalization**: Updated the `use` workflow to handle "v" prefixes (e.g., `ndm use v20`). The resolution logic now prioritizes finding the latest matching version in local storage (`/opt/nodeman`) instead of querying remote repositories.
+
+### Changed
+
+* **Codebase Optimization**: Removed `src/core/status.c` and its references in `CMakeLists.txt` to reduce binary footprint and simplify the core command set.
+* **Session Evaluation Flow**: Adjusted the `--session` (or `-s`) flag behavior to only output shell exports after all internal validation and normalization steps are successfully completed.
+* **Source Formatting**: Cleaned up internal string formatting and memory handling in `use_user` and `install` modules for better readability and C11 compliance.
+
+### Fixed
+
+* **Validation Race Condition**: Fixed a logic flaw where session exports could potentially interfere with system-wide paths when using global flags in package managers.
+* **Symbol Linker Consistency**: Standardized function signatures in `core.h` to match the latest implementation of major version discovery.
 
 ### Added
 

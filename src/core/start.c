@@ -8,7 +8,7 @@
 #include "nodeman/utils.h"
 
 /**
- * Initializes environment v2.5.0
+ * Initializes environment v2.6.0
  * Added: Strict buffer validation and improved root-level escape.
  */
 int start(bool *verbose) {

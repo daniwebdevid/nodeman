@@ -33,7 +33,7 @@ static void cleanup_nodeman_dir(void) {
  * Self-update logic for NDM.
  * Fetches latest tag from GitHub and executes official installer.
  */
-int update(bool *verbose) {
+int update(bool *verbose, int argc, char **argv) {
     // 0. Environment & Privilege Check
     if (getuid() != 0) {
         log_error("Root privileges required for system update");
