@@ -2,22 +2,25 @@
 
 All notable changes to the **NDM (Node Manager)** project will be documented in this file.
 
-## [2.6.1] - 2026-02-17
+## [2.6.1] - 2026-02-18
 
 ### Added
 
-* **Logic Reordering**: Refactored `use.c` to prioritize input validation and version normalization before executing session-based shell exports.
-* **Manifest Synchronization**: Updated `PKGBUILD` and `CMakeLists.txt` to reflect the stable `2.6.1` release.
+* **Security-First Logic Reordering**: Refactored `src/core/use.c` to perform path traversal checks and version normalization *before* any shell evaluation or export.
+* **Release Synchronization**: Updated `PKGBUILD`, `CMakeLists.txt`, and `README.md` to reflect the stable 2.6.1 versioning across the entire project manifest.
+* **Enhanced Version Normalization**: Integrated `is_install` flag to `get_latest_of_major` for more precise version resolution during automated installs.
 
 ### Changed
 
-* **Project Cleanup**: Removed `src/core/status.c` and its associated references to streamline the core command set and reduce binary bloat.
-* **Session Logic**: Moved shell evaluation output (`--session` flag) after security checks to ensure invalid paths are not exported to the user's environment.
+* **Codebase Optimization**: Removed `src/core/status.c` and its references in `CMakeLists.txt` to reduce binary footprint and simplify the core command set.
+* **Session Evaluation Flow**: Adjusted the `--session` (or `-s`) flag behavior to only output shell exports after all internal validation and normalization steps are successfully completed.
+* **Source Formatting**: Cleaned up internal string formatting and memory handling in `use_user` and `install` modules for better readability and C11 compliance.
 
 ### Fixed
 
-* **Validation Order**: Fixed a potential security oversight where session exports were triggered before path traversal validation.
-* **Version String Consistency**: Standardized version normalization across CLI and TUI transitions.
+* **Validation Race Condition**: Fixed a bug where a session export could potentially output an unvalidated path if an invalid version string was provided.
+* **Symbol Linker Consistency**: Standardized function signatures in `core.h` to match the latest implementation of major version discovery.
+
 
 ## [2.6.0] - 2026-02-10
 

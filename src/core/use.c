@@ -13,12 +13,11 @@
  * Supports: --default (system), --session (temporary), and user scope (default).
  */
 int use(bool *verbose, int argc, char *argv[]) {
+    char target_version[64], node_bin[512];
+    char *version_input = NULL;
     bool default_flags = false;
     bool session_flags = false;
-    char target_version[64];
-    char *version_input = NULL;
-    
-    // 0. Argument Parsing
+
     for (int i = 0; i < argc; i++) {
         if (argv[i] == NULL) continue;
 
@@ -31,24 +30,26 @@ int use(bool *verbose, int argc, char *argv[]) {
         }
     }
 
+    // 0. Input Validation
     if (version_input == NULL) {
         log_error("No version specified");
         return 2;
     }
 
-    // 0.1  Input Validation (Security & Path Traversal Check) 
     if (strchr(version_input, '/') != NULL) {
         log_error("Invalid version name: '%s'. Path traversal is not allowed.", version_input);
         errno = EINVAL; 
         return 2;
     }
 
-    // 1. Version Normalization (Major to Latest)
-    if (strncmp(version_input, "v", 1) == 0) {
+    // 1. Version Normalization
+    log_info(*verbose, "Initializing version resolution for: %s", version_input);
+    if (version_input[0] == 'v') {
         int major = atoi(version_input + 1);
-        char* latest = get_latest_of_major(major);
+        char* latest = get_latest_of_major(major, false);
+        
         if (latest != NULL) {
-            strncpy(target_version, latest + 1, sizeof(target_version) - 1);
+            strncpy(target_version, latest, sizeof(target_version) - 1);
             free(latest);
         } else {
             strncpy(target_version, version_input + 1, sizeof(target_version) - 1);
@@ -56,19 +57,27 @@ int use(bool *verbose, int argc, char *argv[]) {
     } else {
         strncpy(target_version, version_input, sizeof(target_version) - 1);
     }
+    target_version[sizeof(target_version) - 1] = '\0';
 
-    // 1.1 Session Switch Logic (Shell Eval Mode)
+    // 2. Binary Check
+    snprintf(node_bin, sizeof(node_bin), "%s/%s/bin/node", NODE_INSTALL_DIR, target_version);
+    
+    if (access(node_bin, X_OK) != 0) {
+        log_error("Node.js v%s is not properly installed (binary not found at %s)", target_version, node_bin);
+        errno = ENOENT;
+        return 2;
+    }
+
+    // 3. Dispatch Operation
     if (session_flags) {
-        printf("export PATH=\"%s/%s/bin:$PATH\";\n", NODE_INSTALL_DIR, version_input);
-        printf("echo '[ndm] Switched to %s for this session only';\n", version_input);
-        printf("[ ! -d ~/.ndm/%s ] && mkdir -p ~/.ndm/%s;\n", version_input, version_input);
-        printf("export NPM_CONFIG_PREFIX=\"$HOME/.ndm/%s\";\n", version_input);
+        printf("export PATH=\"%s/%s/bin:$PATH\";\n", NODE_INSTALL_DIR, target_version);
+        printf("echo '[ndm] Switched to %s for this session only';\n", target_version);
+        printf("[ ! -d ~/.ndm/%s ] && mkdir -p ~/.ndm/%s;\n", target_version, target_version);
+        printf("export NPM_CONFIG_PREFIX=\"$HOME/.ndm/%s\";\n", target_version);
 
         return 0;
     }
 
-
-    // 2. Dispatch Logic
     char *dispatch_argv[] = { target_version };
     if (default_flags) {
         return use_default(verbose, dispatch_argv);
@@ -81,6 +90,8 @@ int use(bool *verbose, int argc, char *argv[]) {
  * Handles system-wide Node.js version switching.
  */
 int use_default(bool *verbose, char *argv[]) {
+    char version_path[512], default_path[512];
+
     log_info(true, "Initializing global switch to Node.js v%s", argv[0]);
 
     if (getuid() != 0) {
@@ -89,8 +100,8 @@ int use_default(bool *verbose, char *argv[]) {
         return 2;
     }
 
-    char version_path[512];
     snprintf(version_path, sizeof(version_path), "%s/%s", NODE_INSTALL_DIR, argv[0]);
+    snprintf(default_path, sizeof(default_path), "%s/default", NODE_INSTALL_DIR);
     
     if (access(version_path, F_OK) != 0) {
         log_error("Version '%s' is not installed in %s", argv[0], NODE_INSTALL_DIR);
@@ -99,10 +110,6 @@ int use_default(bool *verbose, char *argv[]) {
     }
 
     log_info(*verbose, "Updating global default symlink to v%s", argv[0]);
-    
-    char default_path[512];
-    snprintf(default_path, sizeof(default_path), "%s/default", NODE_INSTALL_DIR);
-
     if (symlink_force(verbose, version_path, default_path) != 0) {
         log_error("Failed to update global 'default' symlink");
         return 1;
@@ -116,7 +123,10 @@ int use_default(bool *verbose, char *argv[]) {
  * Handles user-specific Node.js version switching.
  */
 int use_user(bool *verbose, char *argv[]) {
+    char user_version_bin[512], active_link[512], path_buf[1024];
+    char source_file[512], dest_file[512];
     char *home = getenv("HOME");
+    const char *binaries[] = {"node", "npm", "npx", "corepack"};
 
     if (!home) {
         log_error("Environment error: $HOME is not set");
@@ -130,17 +140,8 @@ int use_user(bool *verbose, char *argv[]) {
         return 2;
     }
 
-    char node_bin[512];
-    snprintf(node_bin, sizeof(node_bin), "%s/%s/bin/node", NODE_INSTALL_DIR, argv[0]);
-    
-    if (access(node_bin, X_OK) != 0) {
-        log_error("Node.js v%s is not properly installed (binary not found)", argv[0]);
-        errno = ENOENT;
-        return 2;
-    }
-
+    // 1. Directory Setup
     log_info(*verbose, "Preparing isolated environment in %s/.ndm/%s", home, argv[0]);
-    char user_version_bin[512];
     snprintf(user_version_bin, sizeof(user_version_bin), "%s/.ndm/%s/bin", home, argv[0]);
     
     if (command(verbose, "mkdir -p %s", user_version_bin) != 0) {
@@ -148,12 +149,10 @@ int use_user(bool *verbose, char *argv[]) {
         return 1;
     }
 
-    const char *binaries[] = {"node", "npm", "npx", "corepack"};
-    char source_file[512];
-    char dest_file[512];
-
+    // 2. Link Binaries
     for (int i = 0; i < 4; i++) {
-        snprintf(source_file, sizeof(source_file), "%s/%s/bin/%s", NODE_INSTALL_DIR, argv[0], binaries[i]);
+        snprintf(source_file, sizeof(source_file), "%s/%s/bin/%s", 
+                 NODE_INSTALL_DIR, argv[0], binaries[i]);
         snprintf(dest_file, sizeof(dest_file), "%s/%s", user_version_bin, binaries[i]);
 
         log_info(*verbose, "Linking %s -> %s", binaries[i], dest_file);
@@ -163,17 +162,14 @@ int use_user(bool *verbose, char *argv[]) {
         }
     }
 
+    // 3. State Finalization
     log_info(*verbose, "Updating active environment symlink...");
-    char active_link[512];
     snprintf(active_link, sizeof(active_link), "%s/.ndm/bin", home);
 
     if (symlink_force(verbose, user_version_bin, active_link) != 0) {
         log_error("Failed to update active symlink");
         return 1;
     }
-
-    char path_buf[1024];
-    log_info(*verbose, "Finalizing .npmrc and active state");
 
     snprintf(path_buf, sizeof(path_buf), "%s/.npmrc", home);
     file_write(path_buf, false, "prefix=%s/.ndm/%s/", home, argv[0]);

@@ -49,7 +49,7 @@ int install(bool *verbose, char *argv[], int argc) {
 
     if (strncmp(version_input, "v", 1) == 0) {
         int major = atoi(version_input + 1);
-        char* latest = get_latest_of_major(major);
+        char* latest = get_latest_of_major(major, true);
         if (latest != NULL) {
             strncpy(target_version, latest + 1, sizeof(target_version) - 1);
             free(latest);

@@ -172,39 +172,61 @@ char** get_remote_versions_array(bool *verbose, char **filters, int filter_count
 }
 
 /**
- * Fetches the latest stable version for a specific major version.
+ * Fetches the latest version for a specific major version.
+ * If is_install is true, it fetches from nodejs.org/dist.
+ * If false, it scans the local /opt/nodeman directory.
  */
-char* get_latest_of_major(int major) {
+ char* get_latest_of_major(int major, bool is_install) {
     char target_prefix[16];
     snprintf(target_prefix, sizeof(target_prefix), "v%d.", major);
 
-    FILE *fp = popen("curl -s https://nodejs.org/dist/index.tab", "r");
-    if (!fp) return NULL;
-
-    char line[256];
     char *latest_version = NULL;
-    bool is_header = true;
 
-    while (fgets(line, sizeof(line), fp)) {
-        if (is_header) {
-            is_header = false;
-            continue;
+    if (is_install) {
+        FILE *fp = popen("curl -s https://nodejs.org/dist/index.tab", "r");
+        if (!fp) return NULL;
+
+        char line[256];
+        bool is_header = true;
+
+        while (fgets(line, sizeof(line), fp)) {
+            if (is_header) {
+                is_header = false;
+                continue;
+            }
+
+            char *version = strtok(line, "\t");
+            if (!version) continue;
+
+            if (strncmp(version, target_prefix, strlen(target_prefix)) == 0) {
+                latest_version = strdup(version);
+                break; 
+            }
         }
+        pclose(fp);
+    } else {
+        DIR *dir = opendir("/opt/nodeman");
+        if (!dir) return NULL;
 
-        char *version = strtok(line, "\t");
-        if (!version) continue;
+        struct dirent *entry;
+        while ((entry = readdir(dir)) != NULL) {
+            if (entry->d_type == DT_DIR) {
+                char v_name[32];
+                snprintf(v_name, sizeof(v_name), "v%s", entry->d_name);
 
-        // Since index.tab is sorted from newest to oldest, the first match is the latest.
-        if (strncmp(version, target_prefix, strlen(target_prefix)) == 0) {
-            latest_version = strdup(version);
-            break; 
+                if (strncmp(v_name, target_prefix, strlen(target_prefix)) == 0) {
+                    if (latest_version == NULL || strcmp(entry->d_name, latest_version) > 0) {
+                        free(latest_version);
+                        latest_version = strdup(entry->d_name);
+                    }
+                }
+            }
         }
+        closedir(dir);
     }
 
-    pclose(fp);
     return latest_version;
 }
-
 void free_versions_array(char **versions, int count) {
     if (!versions) return;
     for (int i = 0; i < count; i++) {
