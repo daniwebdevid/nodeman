@@ -1,4 +1,4 @@
-# NDM Headers Interface (v2.6.0)
+# NDM Headers Interface (v2.6.1)
 
 This directory houses the technical contracts, macro definitions, and global configurations for NDM. These headers are designed with strict idempotency (header guards) to ensure safe inclusion across the CLI, TUI, and Core modules.
 
@@ -7,7 +7,7 @@ This directory houses the technical contracts, macro definitions, and global con
 | Macro | Value | Description |
 | --- | --- | --- |
 | `NODE_INSTALL_DIR` | `/opt/nodeman` | The system-wide root for Node.js installations. |
-| `NDM_VERSION` | `2.6.0` | Current software iteration used for self-update comparisons. |
+| `NDM_VERSION` | `2.6.1` | Current software iteration used for self-update comparisons. |
 
 ## Functional API Contracts
 

@@ -36,21 +36,14 @@ int use(bool *verbose, int argc, char *argv[]) {
         return 2;
     }
 
-    // 0.1 Session Switch Logic (Shell Eval Mode)
-    if (session_flags) {
-        printf("export PATH=\"%s/%s/bin:$PATH\";\n", NODE_INSTALL_DIR, version_input);
-        printf("echo '[ndm] Switched to %s for this session only';\n", version_input);
-        return 0;
-    }
-
-    // 1. Input Validation (Security & Path Traversal Check)
+    // 0.1  Input Validation (Security & Path Traversal Check) 
     if (strchr(version_input, '/') != NULL) {
         log_error("Invalid version name: '%s'. Path traversal is not allowed.", version_input);
         errno = EINVAL; 
         return 2;
     }
 
-    // 1.1 Version Normalization (Major to Latest)
+    // 1. Version Normalization (Major to Latest)
     if (strncmp(version_input, "v", 1) == 0) {
         int major = atoi(version_input + 1);
         char* latest = get_latest_of_major(major);
@@ -63,6 +56,17 @@ int use(bool *verbose, int argc, char *argv[]) {
     } else {
         strncpy(target_version, version_input, sizeof(target_version) - 1);
     }
+
+    // 1.1 Session Switch Logic (Shell Eval Mode)
+    if (session_flags) {
+        printf("export PATH=\"%s/%s/bin:$PATH\";\n", NODE_INSTALL_DIR, version_input);
+        printf("echo '[ndm] Switched to %s for this session only';\n", version_input);
+        printf("[ ! -d ~/.ndm/%s ] && mkdir -p ~/.ndm/%s;\n", version_input, version_input);
+        printf("export NPM_CONFIG_PREFIX=\"$HOME/.ndm/%s\";\n", version_input);
+
+        return 0;
+    }
+
 
     // 2. Dispatch Logic
     char *dispatch_argv[] = { target_version };

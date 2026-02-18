@@ -2,6 +2,23 @@
 
 All notable changes to the **NDM (Node Manager)** project will be documented in this file.
 
+## [2.6.1] - 2026-02-17
+
+### Added
+
+* **Logic Reordering**: Refactored `use.c` to prioritize input validation and version normalization before executing session-based shell exports.
+* **Manifest Synchronization**: Updated `PKGBUILD` and `CMakeLists.txt` to reflect the stable `2.6.1` release.
+
+### Changed
+
+* **Project Cleanup**: Removed `src/core/status.c` and its associated references to streamline the core command set and reduce binary bloat.
+* **Session Logic**: Moved shell evaluation output (`--session` flag) after security checks to ensure invalid paths are not exported to the user's environment.
+
+### Fixed
+
+* **Validation Order**: Fixed a potential security oversight where session exports were triggered before path traversal validation.
+* **Version String Consistency**: Standardized version normalization across CLI and TUI transitions.
+
 ## [2.6.0] - 2026-02-10
 
 ### Added

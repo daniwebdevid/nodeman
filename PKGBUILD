@@ -1,6 +1,6 @@
 # Maintainer: dany saputra <danysaputra2682010@gmail.com>
 pkgname=ndm
-pkgver=2.6.0
+pkgver=2.6.1
 pkgrel=1
 pkgdesc="Native Node.js Version Manager in C"
 arch=('x86_64')

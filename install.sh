@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION="2.6.0"
+VERSION="2.6.1"
 
 
 ARCH=$(uname -m)
@@ -18,7 +18,7 @@ case "$ARCH" in
 esac
 
 TAR_NAME="nodeman-${VERSION}-linux-${TAR_ARCH}.tar.xz"
-EXTRACTED_DIR="nodeman-2.6.0-linux"
+EXTRACTED_DIR="nodeman-2.6.1-linux"
 INSTALL_PATH="/opt/nodeman"
 FILE="/etc/login.defs"
 
