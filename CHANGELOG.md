@@ -7,8 +7,7 @@ All notable changes to the **NDM (Node Manager)** project will be documented in 
 ### Added
 
 * **Security-First Logic Reordering**: Refactored `src/core/use.c` to perform path traversal checks and version normalization *before* any shell evaluation or export.
-* **Release Synchronization**: Updated `PKGBUILD`, `CMakeLists.txt`, and `README.md` to reflect the stable 2.6.1 versioning across the entire project manifest.
-* **Enhanced Version Normalization**: Integrated `is_install` flag to `get_latest_of_major` for more precise version resolution during automated installs.
+* **Enhanced Version Normalization**: Updated the `use` workflow to handle "v" prefixes (e.g., `ndm use v20`). The resolution logic now prioritizes finding the latest matching version in local storage (`/opt/nodeman`) instead of querying remote repositories.
 
 ### Changed
 
@@ -18,11 +17,8 @@ All notable changes to the **NDM (Node Manager)** project will be documented in 
 
 ### Fixed
 
-* **Validation Race Condition**: Fixed a bug where a session export could potentially output an unvalidated path if an invalid version string was provided.
+* **Validation Race Condition**: Fixed a logic flaw where session exports could potentially interfere with system-wide paths when using global flags in package managers.
 * **Symbol Linker Consistency**: Standardized function signatures in `core.h` to match the latest implementation of major version discovery.
-
-
-## [2.6.0] - 2026-02-10
 
 ### Added
 
